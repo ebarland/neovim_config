@@ -50,13 +50,7 @@ return packer.startup(function(use)
   -- choco install fd -- intall fd via choco for dependency for telescope
   --https://github.com/sharkdp/fd#installation
   use {"nvim-telescope/telescope.nvim", tag = "0.1.2", requires = {{'nvim-lua/plenary.nvim'}}}
-  --use "tpope/vim-commentary"
-  use {
-    'numToStr/Comment.nvim',
-    config = function()
-        require('Comment').setup()
-    end
-}
+  use {"numToStr/Comment.nvim", config = function() require('Comment').setup() end }
 
 --  use { "windwp/nvim-autopairs", commit = "4fc96c8f3df89b6d23e5092d31c866c53a346347" } -- Autopairs, integrates with both cmp and treesitter
 

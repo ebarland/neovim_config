@@ -65,8 +65,14 @@ keymap("x", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 -- keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
 -- keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
 
-local builtin = require('telescope.builtin')
-keymap("n", "<leader>ff", builtin.find_files, {})
-keymap("n", "<leader>fg", builtin.live_grep, {})
-keymap("n", "<leader>fb", builtin.buffers, {})
-keymap("n", "<leader>fh", builtin.help_tags, {})
+local status, _ = pcall(require, 'telescope')
+if not status then
+	print('Something went wrong:', plugin)
+else
+	local builtin = require('telescope.builtin')
+	keymap("n", "<leader>ff", builtin.find_files, {})
+	keymap("n", "<leader>fg", builtin.live_grep, {})
+	keymap("n", "<leader>fb", builtin.buffers, {})
+	keymap("n", "<leader>fh", builtin.help_tags, {})
+end
+
