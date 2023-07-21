@@ -27,10 +27,15 @@ o.showmatch = true              -- set show matching parenthesis
 o.smarttab = true               -- insert tabs on the start of a line according to shiftwidth, not tabstop
 o.scrolloff = 4                 -- keep 4 lines off the edges of the screen when scrolling
 
-require("nvim-tree").setup()
 
-local function open_nvim_tree()
-    require("nvim-tree.api").tree.open()
+ local tree_status, _ = pcall(require, "nvim-tree")
+ if not tree_status then
+ 	print("nvim-tree not found:", plugin)
+ else
+	require("nvim-tree").setup()
+	local function open_nvim_tree()
+		require("nvim-tree.api").tree.open()
+	end
+	vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 end
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })

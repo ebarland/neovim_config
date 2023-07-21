@@ -6,5 +6,7 @@ ECHO 'Y' | choco install git.install
 ECHO 'Y' | choco install ripgrep 
 ECHO 'Y' | choco install fd
 
-#install windows terminal
-#download https://www.nerdfonts.com/font-downloads JetBrainsMono.zip
+#install windows terminal -- optional
+#download https://www.nerdfonts.com/font-downloads JetBrainsMono.zip -> JetBrainsMonoNerdFont-Regular.ttf
+#copy shell to c:/Development
+#use included shortcut to open vim 
