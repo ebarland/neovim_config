@@ -45,12 +45,25 @@ return packer.startup(function(use)
   use "rcarriga/nvim-notify"
   use "dracula/vim" -- colors
   use "folke/tokyonight.nvim" -- colors
-  use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
+  use "nvim-tree/nvim-web-devicons"
   --choco install ripgrep 
   -- choco install fd -- intall fd via choco for dependency for telescope
   --https://github.com/sharkdp/fd#installation
   use {"nvim-telescope/telescope.nvim", tag = "0.1.2", requires = {{'nvim-lua/plenary.nvim'}}}
+  use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
   use {"numToStr/Comment.nvim", config = function() require('Comment').setup() end }
+  use { "nvim-tree/nvim-tree.lua", requires = { "nvim-tree/nvim-web-devicons" } }
+  use { "folke/which-key.nvim", config = function()
+											 vim.o.timeout = true
+											 vim.o.timeoutlen = 300
+											 require("which-key").setup 
+											 {
+										 		-- your configuration comes here
+									 			-- or leave it empty to use the default settings
+								 				-- refer to the configuration section below
+							 				 }
+										 end
+									 }
 
 --  use { "windwp/nvim-autopairs", commit = "4fc96c8f3df89b6d23e5092d31c866c53a346347" } -- Autopairs, integrates with both cmp and treesitter
 

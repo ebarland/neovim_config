@@ -65,14 +65,31 @@ keymap("x", "<A-k>", ":m '<-2<CR>gv=gv", opts)
 -- keymap("t", "<C-k>", "<C-\\><C-N><C-w>k", term_opts)
 -- keymap("t", "<C-l>", "<C-\\><C-N><C-w>l", term_opts)
 
-local status, _ = pcall(require, 'telescope')
+local status, _ = pcall(require, "telescope")
 if not status then
-	print('Something went wrong:', plugin)
+	print("Telescope not found:", plugin)
 else
-	local builtin = require('telescope.builtin')
+	local builtin = require("telescope.builtin")
 	keymap("n", "<leader>ff", builtin.find_files, {})
 	keymap("n", "<leader>fg", builtin.live_grep, {})
 	keymap("n", "<leader>fb", builtin.buffers, {})
 	keymap("n", "<leader>fh", builtin.help_tags, {})
 end
 
+ local tree_status, _ = pcall(require, "nvim-tree")
+ if not tree_status then
+ 	print("nvim-tree not found:", plugin)
+ else
+ 	keymap("n", "<leader>tt", ":NvimTreeOpen<CR>", {})
+	keymap("n", "<leader>bb", ":! build.bat<CR>", {})
+	keymap("n", "<leader>dd", ":! debug.bat<CR>", {})
+
+ 	local api = require('nvim-tree.api')
+
+	local function opts(desc)
+		return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+	end
+
+	keymap("n", "<C-o>", api.tree.change_root_to_node, opts("CD"))
+	keymap("n", "<C-u>", api.tree.change_root_to_parent, opts("Up"))
+end

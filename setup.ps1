@@ -5,3 +5,6 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 ECHO 'Y' | choco install git.install
 ECHO 'Y' | choco install ripgrep 
 ECHO 'Y' | choco install fd
+
+#install windows terminal
+#download https://www.nerdfonts.com/font-downloads JetBrainsMono.zip
