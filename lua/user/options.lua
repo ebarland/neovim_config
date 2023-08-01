@@ -4,6 +4,7 @@ o = vim.opt
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+
 o.number = true -- line numbers
 o.termguicolors = true
 
@@ -27,6 +28,7 @@ o.showmatch = true              -- set show matching parenthesis
 o.smarttab = true               -- insert tabs on the start of a line according to shiftwidth, not tabstop
 o.scrolloff = 4                 -- keep 4 lines off the edges of the screen when scrolling
 
+ vim.api.nvim_command("set fillchars=eob:\\ ") 
 
  local tree_status, _ = pcall(require, "nvim-tree")
  if not tree_status then
@@ -78,3 +80,7 @@ bufferline.setup({
         themable = true
     }
 })
+
+require("mason").setup()
+require("mason-lspconfig").setup()
+

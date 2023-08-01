@@ -42,7 +42,13 @@ packer.init({
 return packer.startup(function(use)
   use "wbthomason/packer.nvim" -- Have packer manage itself
   use "nvim-lua/plenary.nvim" -- Useful lua functions used by lots of plugins
-  use "neovim/nvim-lspconfig"
+
+  use {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
+}
+
   --use "rcarriga/nvim-notify"
   --use "dracula/vim" -- colors
   use "Mofiqul/dracula.nvim"
