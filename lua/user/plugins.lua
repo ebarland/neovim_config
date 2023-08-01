@@ -42,15 +42,25 @@ packer.init({
 return packer.startup(function(use)
   use "wbthomason/packer.nvim" -- Have packer manage itself
   use "nvim-lua/plenary.nvim" -- Useful lua functions used by lots of plugins
-  use "rcarriga/nvim-notify"
-  use "dracula/vim" -- colors
-  use "folke/tokyonight.nvim" -- colors
+  use "neovim/nvim-lspconfig"
+  --use "rcarriga/nvim-notify"
+  --use "dracula/vim" -- colors
+  use "Mofiqul/dracula.nvim"
+  --use "folke/tokyonight.nvim" -- colors
+  use { "catppuccin/nvim", as = "catppuccin" }
+  use "EdenEast/nightfox.nvim" -- Packer
   use "nvim-tree/nvim-web-devicons"
   --choco install ripgrep 
   -- choco install fd -- intall fd via choco for dependency for telescope
   --https://github.com/sharkdp/fd#installation
   use {"nvim-telescope/telescope.nvim", tag = "0.1.2", requires = {{'nvim-lua/plenary.nvim'}}}
-  use {"nvim-treesitter/nvim-treesitter", run = ":TSUpdate"}
+    use {
+        'nvim-treesitter/nvim-treesitter',
+        run = function()
+            local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+            ts_update()
+        end,
+    }  
   use {"numToStr/Comment.nvim", config = function() require('Comment').setup() end }
   use { "nvim-tree/nvim-tree.lua", requires = { "nvim-tree/nvim-web-devicons" } }
   use { "folke/which-key.nvim", config = function()
@@ -64,6 +74,29 @@ return packer.startup(function(use)
 							 				 }
 										 end
 									 }
+  use {'akinsho/bufferline.nvim', tag = "*", requires = 'nvim-tree/nvim-web-devicons'}
+  --use {
+  --"VonHeikemen/lsp-zero.nvim",
+  --branch = "v2.x",
+  --requires = {
+  --  -- LSP Support
+  --  {'neovim/nvim-lspconfig'},             -- Required
+  --  {                                      -- Optional
+  --    'williamboman/mason.nvim',
+  --    run = function()
+  --      pcall(vim.api.nvim_command, 'MasonUpdate')
+  --    end,
+  --  },
+  --  {'williamboman/mason-lspconfig.nvim'}, -- Optional
+  --
+  --  -- Autocompletion
+  --  {'hrsh7th/nvim-cmp'},     -- Required
+  --  {'hrsh7th/cmp-nvim-lsp'}, -- Required
+  --  {'L3MON4D3/LuaSnip'},     -- Required
+  --}
+  
+--  use "williamboman/nvim-lsp-installer"
+--}
 
 --  use { "windwp/nvim-autopairs", commit = "4fc96c8f3df89b6d23e5092d31c866c53a346347" } -- Autopairs, integrates with both cmp and treesitter
 

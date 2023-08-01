@@ -83,6 +83,7 @@ end
  	keymap("n", "<leader>tt", ":NvimTreeOpen<CR>", {})
 	keymap("n", "<leader>bb", ":! build.bat<CR>", {})
 	keymap("n", "<leader>dd", ":! debug.bat<CR>", {})
+	keymap("n", "<leader>gg", ":! run.bat<CR>", {})
 
  	local api = require('nvim-tree.api')
 

@@ -32,10 +32,15 @@ o.scrolloff = 4                 -- keep 4 lines off the edges of the screen when
  if not tree_status then
  	print("nvim-tree not found:", plugin)
  else
-	require("nvim-tree").setup()
+	require("nvim-tree").setup(
+	{
+		hijack_unnamed_buffer_when_opening = true,
+	})
+
 	local function open_nvim_tree()
 		require("nvim-tree.api").tree.open()
 	end
+
 	vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 end
 
@@ -52,12 +57,24 @@ else
 		-- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
 		auto_install = true,
 		-- List of parsers to ignore installing (for "all")
-		ignore_install = { "javascript" },
+		ignore_install = { "javascript" }
 		---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
 		-- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-		highlight = {
-			enable = true,
-			additional_vim_regex_highlighting = false
-		}
+		--highlight = {
+		--	enable = true,
+		--	additional_vim_regex_highlighting = false
+		--}
 	}
 end
+
+
+local bufferline = require('bufferline')
+bufferline.setup({
+    options = {
+        style_preset = bufferline.style_preset.no_italic,
+		diagnostics = "nvim_lsp",
+		offsets = {{ filetype = "NvimTree",	text = "", highlight = "Directory", separator = true }},
+		always_show_bufferline = false,
+        themable = true
+    }
+})
