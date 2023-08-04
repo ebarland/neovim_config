@@ -80,10 +80,10 @@ end
  if not tree_status then
  	print("nvim-tree not found:", plugin)
  else
- 	keymap("n", "<leader>tt", ":NvimTreeOpen<CR>", {})
-	keymap("n", "<leader>bb", ":! build.bat<CR>", {})
-	keymap("n", "<leader>dd", ":! debug.bat<CR>", {})
-	keymap("n", "<leader>gg", ":! run.bat<CR>", {})
+ 	keymap("n", "<leader>t", ":NvimTreeToggle<CR>", {})
+	keymap("n", "<leader>b", ":! build.bat<CR>", {})
+	keymap("n", "<leader>d", ":! debug.bat<CR>", {})
+	keymap("n", "<leader>r", ":! run.bat<CR>", {})
 
  	local api = require('nvim-tree.api')
 
