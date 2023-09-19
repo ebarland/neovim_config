@@ -22,10 +22,9 @@ local plugins = {
   	    ensure_installed = {
   	      "clangd",
   	      "codelldb",
-  	      --"clang-format",
 		  "lua-language-server",
-		  "python-lsp-server",
-		  --"rust-analyzer"
+		  "pyright",
+		  "debugpy"
   	    }
   	  }
   	},
@@ -64,6 +63,39 @@ local plugins = {
   	    dap.listeners.after.event_exited["dapui_config"] = function()
   	      dapui.close()
   	    end
+  	  end
+  	},
+  	{
+  	  "mfussenegger/nvim-dap-python",
+	  ft = "python",
+	  dependencies = {
+		"mfussenegger/nvim-dap",
+		"rcarriga/nvim-dap-ui"
+	  },
+  	  config = function(_, opts)
+		local path = "%LOCALAPPDATA%\\nvim-data\\mason\\packages\\debugpy\\venv\\Scripts\\python.exe"
+  	    require("dap-python").setup(path)
+		require("core.utils").load_mappings("dap_python")
+
+
+	-- --require("dap-python").setup(vim.fn.getcwd() .. "\\Scripts\\" .. "python.exe")
+	-- require("dap-python").setup("C:\\Development\\Local\\.virtualenvs\\debugpy\\Scripts\\python.exe")
+	-- table.insert(require("dap").configurations.python, {
+	-- 	type = "python",
+	-- 	request = "launch",
+	-- 	program = "${file}",
+	-- 	console = "integratedTerminal",
+	-- 	name = "Launch file with autoReload",
+	-- 	justMyCode = false,
+	-- 	autoReload = {
+	-- 		enable = true,
+	-- 	},
+	-- })
+
+	-- require("dap-python").resolve_python = function()
+	-- 	--return vim.fn.getcwd() .. "\\Scripts\\" .. "python.exe"
+	-- 	return "C:\\Development\\Local\\.virtualenvs\\debugpy\\Scripts\\python.exe"
+	-- end
   	  end
   	},
 	{
