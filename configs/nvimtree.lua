@@ -12,10 +12,15 @@ end
 
 local options = {
   on_attach = my_on_attach,
-  hijack_unnamed_buffer_when_opening = true,
   git = {
     enable = true,
-    ignore = true,
+    ignore = true
+  },
+  hijack_unnamed_buffer_when_opening = true,
+  actions = {
+    change_dir = {
+      global = true
+    }
   }
 }
 

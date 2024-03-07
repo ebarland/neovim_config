@@ -1,66 +1,49 @@
+-- n, v, i, t = mode names
+
 local M = {}
 
 M.dap = {
   plugin = true,
   n = {
-    ["<leader>db"] = {
-		"<cmd> DapToggleBreakpoint <CR>",
-        "Add breakbpoint at line"
+    ["<F5>"] = {
+      "<cmd> DapContinue <CR>",
+      "Start/continue debugger"
     },
-    ["<leader>dr"] = {
-		"<cmd> DapContinue <CR>",
-		"Start or continue the debugger"
+    ["<S-F5>"] = {
+      "<cmd> DapTerminate <CR>",
+      "Start/continue debugger"
+    },
+    ["<F9>"] = {
+      "<cmd> DapToggleBreakpoint <CR>",
+      "Add/remove breakpoint"
+    },
+    ["<F10>"] = {
+      "<cmd> DapStepOver <CR>",
+      "Step over"
+    },
+    ["<F11>"] = {
+      "<cmd> DapStepInto <CR>",
+      "Step into"
+    },
+    ["<F4>"] = {
+      "<Cmd>lua require\"dapui\".toggle()<CR>",
+      "Toggle DAP-UI"
     }
   }
 }
 
-M.dap_python = {
-	plugin = true,
-	n = {
-		["<leader>dpr"] = {
-			function ()
-				require('dap-python').test_method()
-			end
-		}
-	}
-
-}
-
 M.custom = {
-	plugin = false,
-	n = {
-		["<leader>cc"] = {
-			":cd C:\\Users\\Egil\\AppData\\Local\\nvim<CR>:NvimTreeToggle<CR>",
-			"Move to and open NVIM config directory"
-		}
-	}
--- Resize with arrows
---keymap("n", "<C-Up>", ":resize -2<CR>", opts)
---keymap("n", "<C-Down>", ":resize +2<CR>", opts)
---keymap("n", "<C-Left>", ":vertical resize -2<CR>", opts)
---keymap("n", "<C-Right>", ":vertical resize +2<CR>", opts)
+  plugin = false,
+  n = {
+    ["<leader>cc"] = {
+      ":cd C:\\Users\\Egil\\AppData\\Local\\nvim<CR>:NvimTreeFocus<CR>",
+      "Move to and open NVIM config directory"
+    },
+    ["<leader>cd"] = {
+      ":cd C:\\Development\\Git<CR>:NvimTreeFocus<CR>",
+      "Move to and open GIT directory"
+    }
+  }
 }
-
--- In order to disable a default keymap, use
--- M.disabled = {
---   n = {
---       ["<leader>h"] = "",
---       ["<C-a>"] = ""
---   }
--- }
-
--- Your custom mappings
---M.abc = {
---  n = {
---		
-----     ["<C-n>"] = {"<cmd> Telescope <CR>", "Telescope"},
-----     ["<C-s>"] = {":Telescope Files <CR>", "Telescope Files"} 
---  }
---
-----  i = {
-----     ["jk"] = { "<ESC>", "escape insert mode" , opts = { nowait = true }},
-----    -- ...
-----  }
---}
 
 return M
