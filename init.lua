@@ -43,14 +43,14 @@ local opt = vim.opt
 
 opt.autoindent = true -- always set autoindenting on
 --opt.copyindent = true -- copy the previous indentation on autoindenting
-opt.swapfile = false   -- do not create swap files
+opt.swapfile = false  -- do not create swap files
 
-opt.expandtab = false  -- expands tab to spaces, fuck that
-opt.shiftwidth = 4     -- number of spaces to use for autoindenting
-opt.tabstop = 4        --  a tab is four spaces
+opt.expandtab = false -- expands tab to spaces, fuck that
+opt.shiftwidth = 4    -- number of spaces to use for autoindenting
+opt.tabstop = 4       --  a tab is four spaces
 
-opt.wrap = false       -- line wrapping
-opt.scrolloff = 16     -- sets the number of lines to buffer while scrolling up and down
+opt.wrap = false      -- line wrapping
+opt.scrolloff = 16    -- sets the number of lines to buffer while scrolling up and down
 opt.sidescrolloff = 16
 opt.modifiable = true
 
@@ -58,3 +58,11 @@ opt.modifiable = true
 --opt.cindent = true
 
 opt.whichwrap = "b,s"
+
+--opt.foldtype = 'expr'
+--opt.foldexpr = 'nvim_treesitter#foldexpr()'
+
+opt.foldcolumn = '1'
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldenable = true

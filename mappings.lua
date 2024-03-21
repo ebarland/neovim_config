@@ -32,7 +32,7 @@ M.custom = {
 			"Move to and open NVIM config directory"
 		},
 		["<leader>cd"] = {
-			":cd %SystemDrive%\\Git<CR>:NvimTreeFocus<CR>",
+			":cd C:\\Development\\Git\\Private<CR>:NvimTreeFocus<CR>",
 			"Move to and open GIT directory"
 		},
 		["<leader>ctg"] = {
