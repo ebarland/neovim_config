@@ -1,4 +1,5 @@
 local plugins = {
+	-- Lua
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		enabled = false
@@ -13,30 +14,13 @@ local plugins = {
 		event = "VimEnter", -- needed for folds to load in time and comments closed
 		keys = {
 			-- stylua: ignore start
-			--{ "zm", function() require("ufo").closeAllFolds() end, desc = " 󱃄 Close All Folds" },
-			--{ "zr", function() require("ufo").openFoldsExceptKinds { "comment", "imports" } end, desc = " 󱃄 Open All Regular Folds" },
-			--{ "zR", function() require("ufo").openFoldsExceptKinds {} end, desc = " 󱃄 Open All Folds" },
+			{ "zm", function() require("ufo").closeAllFolds() end, desc = " 󱃄 Close All Folds" },
+			{ "zr", function() require("ufo").openFoldsExceptKinds { "comment", "imports" } end, desc = " 󱃄 Open All Regular Folds" },
+			{ "zR", function() require("ufo").openFoldsExceptKinds {} end, desc = " 󱃄 Open All Folds" },
 			{ "z1", function() require("ufo").closeFoldsWith(1) end, desc = " 󱃄 Close L1 Folds" },
 			{ "z2", function() require("ufo").closeFoldsWith(2) end, desc = " 󱃄 Close L2 Folds" },
 			{ "z3", function() require("ufo").closeFoldsWith(3) end, desc = " 󱃄 Close L3 Folds" },
 			{ "z4", function() require("ufo").closeFoldsWith(4) end, desc = " 󱃄 Close L4 Folds" },
-			-- {
-			-- 	"zj",
-			-- 	function()
-			-- 		vim.g.foldlevel =  vim.g.foldlevel - 1
-			-- 		require("ufo").closeFoldsWith(vim.g.foldlevel)
-			-- 	end,
-			-- 	desc = " 󱃄 Close L4 Folds"
-			-- },
-			-- {
-			-- 	"zl",
-			-- 	function()
-			-- 		vim.g.foldlevel =  vim.g.foldlevel + 1
-			-- 		require("ufo").closeFoldsWith(vim.g.foldlevel)
-			-- 	end,
-			-- 	desc = " 󱃄 Close L4 Folds"
-			-- },
-			-- stylua: ignore end
 		},
 		init = function()
 			-- INFO fold commands usually change the foldlevel, which fixes folds, e.g.
@@ -44,8 +28,10 @@ local plugins = {
 			-- have equivalents for zr and zm because there is no saved fold level.
 			-- Consequently, the vim-internal fold levels need to be disabled by setting
 			-- them to 99
-			vim.opt.foldlevel = 2
-			vim.opt.foldlevelstart = -1
+			vim.opt.foldcolumn = '1'
+			vim.opt.foldlevel = 99
+			vim.opt.foldlevelstart = 99
+			vim.opt.foldnestmax = 4
 		end,
 		opts = {
 			provider_selector = function(_, ft, _)
@@ -98,7 +84,8 @@ local plugins = {
 				"vimdoc",
 				"cmake",
 				"c",
-				"cpp"
+				"cpp",
+				"glsl-analyzer"
 			},
 			indent = { enable = false } --messess up indentation when using namespaces in c++
 		}
@@ -130,7 +117,8 @@ local plugins = {
 				"clangd",
 				"codelldb",
 				"lua-language-server",
-				"cmake-language-server"
+				"cmake-language-server",
+				"glsl-analyzer"
 			}
 		}
 	},
@@ -154,7 +142,9 @@ local plugins = {
 	{
 		"rcarriga/nvim-dap-ui",
 		event = "VeryLazy",
-		dependencies = "mfussenegger/nvim-dap",
+		dependencies = {
+			"mfussenegger/nvim-dap",
+			"nvim-neotest/nvim-nio" },
 		config = function()
 			local dap = require "dap"
 			local dapui = require "dapui"
@@ -171,6 +161,33 @@ local plugins = {
 				dapui.close()
 			end
 		end
+	},
+	{
+		"folke/zen-mode.nvim",
+		opts = {
+			window = {
+				backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
+				-- height and width can be:
+				-- * an absolute number of cells when > 1
+				-- * a percentage of the width / height of the editor when <= 1
+				-- * a function that returns the width or the height
+				width = 250, -- width of the Zen window
+				height = 1, -- height of the Zen window
+				-- by default, no options are changed for the Zen window
+				-- uncomment any of the options below, or add other vim.wo options you want to apply
+				options = {
+					signcolumn = "no", -- disable signcolumn
+					number = false, -- disable number column
+					relativenumber = false, -- disable relative numbers
+					cursorline = false, -- disable cursorline
+					cursorcolumn = false, -- disable cursor column
+					foldcolumn = "0", -- disable fold column
+					list = false, -- disable whitespace characters
+				},
+			},
+		}
+		,
+		lazy = false
 	}
 }
 

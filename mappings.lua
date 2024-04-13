@@ -7,7 +7,9 @@ M.disabled = {
 		["<leader>b"] = "",
 		["<leader>e"] = "",
 		["<C-n>"] = "",
-		["<C-.>"] = ""
+		["<C-.>"] = "",
+		["<C-m>"] = "",
+		["<C-o>"] = ""
 	}
 }
 
@@ -28,7 +30,7 @@ M.custom = {
 	plugin = false,
 	n = {
 		["<leader>cc"] = {
-			":cd " ..config_dir.. "<CR>:NvimTreeFocus<CR>",
+			":cd " .. config_dir .. "<CR>:NvimTreeFocus<CR>",
 			"Move to and open NVIM config directory"
 		},
 		["<leader>cd"] = {
@@ -36,7 +38,7 @@ M.custom = {
 			"Move to and open GIT directory"
 		},
 		["<leader>ctg"] = {
-			":! xcopy /s /y "..config_dir.. "\\lua\\custom C:\\Development\\Git\\Private\\neovim_config<CR>",
+			":! xcopy /s /y " .. config_dir .. "\\lua\\custom C:\\Development\\Git\\Private\\neovim_config<CR>",
 			"Copies and overwrites the local neovim config to neovim_git folder"
 		},
 		["<leader>bb"] = {
@@ -50,6 +52,14 @@ M.custom = {
 		["<leader>bd"] = {
 			":! .\\scripts\\debug.bat<CR>",
 			"runs debug.bat"
+		},
+		["<leader>tt"] = {
+			"<cmd> ZenMode <CR>",
+			"Toggle Zen Mode"
+		},
+		["<C-me"] = {
+			"zA",
+			"fold open"
 		}
 	}
 }
