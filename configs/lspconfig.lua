@@ -16,9 +16,9 @@ lspconfig.cmake.setup {
 
 }
 
-lspconfig.glsl_analyzer.setup {
-
-}
+-- lspconfig.glsl_analyzer.setup {
+--
+-- }
 
 -- "languageserver": {
 --   "cmake": {
