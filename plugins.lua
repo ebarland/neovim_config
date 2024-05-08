@@ -84,8 +84,7 @@ local plugins = {
 				"vimdoc",
 				"cmake",
 				"c",
-				"cpp",
-				"glsl-analyzer"
+				"cpp"
 			},
 			indent = { enable = false } --messess up indentation when using namespaces in c++
 		}
@@ -117,8 +116,7 @@ local plugins = {
 				"clangd",
 				"codelldb",
 				"lua-language-server",
-				"cmake-language-server",
-				"glsl-analyzer"
+				"cmake-language-server"
 			}
 		}
 	},

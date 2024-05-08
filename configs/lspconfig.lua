@@ -15,20 +15,3 @@ lspconfig.clangd.setup {
 lspconfig.cmake.setup {
 
 }
-
--- lspconfig.glsl_analyzer.setup {
---
--- }
-
--- "languageserver": {
---   "cmake": {
---     "command": "cmake-language-server",
---     "filetypes": ["cmake"],
---     "rootPatterns": [
---       "build/"
---     ],
---     "initializationOptions": {
---       "buildDirectory": "build"
---     }
---   }
--- }
