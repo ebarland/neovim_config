@@ -41,19 +41,19 @@ M.custom = {
 			":! xcopy /s /y " .. config_dir .. "\\lua\\custom C:\\Development\\Git\\Private\\neovim_config<CR>",
 			"Copies and overwrites the local neovim config to neovim_git folder"
 		},
-		["<leader>bbd"] = {
-			":! .\\scripts\\build_debug.bat<CR>",
-			"runs build_debug.bat"
-		},
-		["<leader>bbr"] = {
-			":! .\\scripts\\build_release.bat<CR>",
-			"runs build_release.bat"
+		["<leader>bd"] = {
+			":! .\\scripts\\build.bat Debug<CR>",
+			"runs build.bat with Debug config"
 		},
 		["<leader>br"] = {
+			":! .\\scripts\\build.bat Release<CR>",
+			"runs build.bat with Release config"
+		},
+		["<leader>re"] = {
 			":! .\\scripts\\run.bat<CR>",
 			"runs run.bat"
 		},
-		["<leader>bdd"] = {
+		["<leader>rd"] = {
 			":! .\\scripts\\debug.bat<CR>",
 			"runs debug.bat"
 		},
