@@ -61,6 +61,10 @@ M.custom = {
 			"<cmd> ZenMode <CR>",
 			"Toggle Zen Mode"
 		},
+		["<leader>gl"] = {
+			"<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
+			"Toggle GLSL Viewer"
+		},
 		["<C-me"] = {
 			"zA",
 			"fold open"

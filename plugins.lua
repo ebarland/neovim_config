@@ -76,6 +76,9 @@ local plugins = {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
+		init = function()
+			vim.treesitter.language.register('vert', { 'glsl', 'vs' })
+		end,
 		opts = {
 			ensure_installed = {
 				"lua",
@@ -84,9 +87,10 @@ local plugins = {
 				"vimdoc",
 				"cmake",
 				"c",
-				"cpp"
+				"cpp",
+				"glsl"
 			},
-			indent = { enable = false } --messess up indentation when using namespaces in c++
+			indent = { enable = false } --messes up indentation when using namespaces in c++
 		}
 	},
 	{
@@ -98,6 +102,7 @@ local plugins = {
 			default_conf.filters.dotfiles = true
 			default_conf.view.width = 40
 			default_conf.git.enable = true
+			default_conf.git.timeout = 10000
 			default_conf.actions = custom_conf.actions
 			return default_conf
 		end
@@ -116,7 +121,8 @@ local plugins = {
 				"clangd",
 				"codelldb",
 				"lua-language-server",
-				"cmake-language-server"
+				"cmake-language-server",
+				-- "glsl_analyzer"
 			}
 		}
 	},
@@ -187,6 +193,9 @@ local plugins = {
 		,
 		lazy = false
 	}
+	-- {
+	-- 	"timtro/glslView-nvim", ft = 'glsl'
+	-- }
 }
 
 return plugins

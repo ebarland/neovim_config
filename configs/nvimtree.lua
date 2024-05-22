@@ -12,14 +12,6 @@ end
 
 local options = {
 	on_attach = my_on_attach,
-	git = {
-		enable = true,
-		show_on_dirs = true,
-		show_on_open_dirs = true,
-		disable_for_dirs = {},
-		timeout = 10000,
-		cygwin_support = false,
-	},
 	actions = {
 		open_file = {
 			resize_window = true,
