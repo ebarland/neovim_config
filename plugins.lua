@@ -122,7 +122,7 @@ local plugins = {
 				"codelldb",
 				"lua-language-server",
 				"cmake-language-server",
-				-- "glsl_analyzer"
+				"glsl_analyzer"
 			}
 		}
 	},
@@ -192,10 +192,10 @@ local plugins = {
 		}
 		,
 		lazy = false
+	},
+	{
+		"timtro/glslView-nvim", ft = 'glsl'
 	}
-	-- {
-	-- 	"timtro/glslView-nvim", ft = 'glsl'
-	-- }
 }
 
 return plugins

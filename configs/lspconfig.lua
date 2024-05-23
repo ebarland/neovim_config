@@ -12,9 +12,9 @@ lspconfig.clangd.setup {
 	capabilities = capabilities
 }
 
--- lspconfig.glsl_analyzer.setup {
--- 	filetypes = { "glsl", "vert", "tesc", "tese", "frag", "geom", "comp" }
--- }
+lspconfig.glsl_analyzer.setup {
+	filetypes = { "glsl", "frag", "vert", "vs", "fs" }
+}
 
 lspconfig.cmake.setup {
 
