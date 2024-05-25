@@ -76,9 +76,6 @@ local plugins = {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
-		init = function()
-			vim.treesitter.language.register('vert', { 'glsl', 'vs' })
-		end,
 		opts = {
 			ensure_installed = {
 				"lua",
