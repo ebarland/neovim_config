@@ -65,9 +65,9 @@ M.custom = {
 			"<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
 			"Toggle GLSL Viewer"
 		},
-		["<C-me"] = {
-			"zA",
-			"fold open"
+		["<leader>gd"] = {
+			"<cmd>TroubleToggle<CR>",
+			"Toggle Trouble"
 		}
 	}
 }
