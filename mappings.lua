@@ -42,11 +42,11 @@ M.custom = {
 			"Copies and overwrites the local neovim config to neovim_git folder"
 		},
 		["<leader>bd"] = {
-			":! .\\scripts\\build.bat Debug<CR>",
+			":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
 			"runs build.bat with Debug config"
 		},
 		["<leader>br"] = {
-			":! .\\scripts\\build.bat Release<CR>",
+			":wa<CR>:! .\\scripts\\build.bat Release<CR>",
 			"runs build.bat with Release config"
 		},
 		["<leader>re"] = {
