@@ -45,6 +45,10 @@ M.custom = {
 			":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
 			"runs build.bat with Debug config"
 		},
+		["<leader>bb"] = {
+			":wa<CR>:! .\\scripts\\build.bat<CR>",
+			"runs build.bat"
+		},
 		["<leader>br"] = {
 			":wa<CR>:! .\\scripts\\build.bat Release<CR>",
 			"runs build.bat with Release config"
@@ -56,6 +60,10 @@ M.custom = {
 		["<leader>rd"] = {
 			":! .\\scripts\\debug.bat<CR>",
 			"runs debug.bat"
+		},
+		["<leader>rt"] = {
+			":! .\\scripts\\test.bat<CR>",
+			"runs test.bat"
 		},
 		["<leader>tt"] = {
 			"<cmd> ZenMode <CR>",
