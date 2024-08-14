@@ -29,7 +29,8 @@ local plugins = {
 				"cmake",
 				"c",
 				"cpp",
-				"glsl"
+				"glsl",
+				"c_sharp"
 			},
 			indent = { enable = false } --messes up indentation when using namespaces in c++
 		}

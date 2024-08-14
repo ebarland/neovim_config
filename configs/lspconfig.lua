@@ -13,9 +13,23 @@ lspconfig.clangd.setup {
 }
 
 lspconfig.glsl_analyzer.setup {
-	filetypes = { "glsl", "frag", "vert", "vs", "fs" }
+	filetypes = { "glsl", "frag", "vert", "vs", "fs" },
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+	end,
+	capabilities = capabilities
 }
 
 lspconfig.cmake.setup {
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+	end,
+	capabilities = capabilities
+}
 
+lspconfig.csharp_ls.setup {
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+	end,
+	capabilities = capabilities
 }
