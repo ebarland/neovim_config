@@ -45,6 +45,10 @@ M.custom = {
 			":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
 			"runs build.bat with Debug config"
 		},
+		["<leader>be"] = {
+			":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>",
+			"runs rebuild.bat with Debug config"
+		},
 		-- ["<leader>bb"] = {
 		-- 	":wa<CR>:! .\\scripts\\build.bat<CR>",
 		-- 	"runs build.bat"

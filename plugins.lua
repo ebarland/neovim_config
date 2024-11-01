@@ -64,7 +64,8 @@ local plugins = {
 				"codelldb",
 				"lua-language-server",
 				"cmake-language-server",
-				"glsl_analyzer"
+				"glsl_analyzer",
+				"csharp-language-server"
 			}
 		}
 	},
