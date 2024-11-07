@@ -69,6 +69,10 @@ M.custom = {
 			":! .\\scripts\\test.bat<CR>",
 			"runs test.bat"
 		},
+		["<leader>rft"] = {
+			":! .\\scripts\\test_failed.bat<CR>",
+			"runs test_failed.bat"
+		},
 		["<leader>tt"] = {
 			"<cmd> ZenMode <CR>",
 			"Toggle Zen Mode"
@@ -80,7 +84,25 @@ M.custom = {
 		["<leader>gd"] = {
 			"<cmd>TroubleToggle<CR>",
 			"Toggle Trouble"
-		}
+		},
+		["<leader>qp"] = {
+			"<cmd>wqa<CR>",
+			"Quit"
+		},
+		-- ["<C-BS>"] = {
+		-- 	"dw",
+		-- 	'delete from cursor to ending word'
+		-- },
+		-- ["<C-Del>"] = {
+		-- 	"db",
+		-- 	'delete from cursor to beginning word'
+		-- }
+	},
+	i = {
+		-- ["<C-BS>"] = {
+		-- 	"<C-W>",
+		-- 	'delete from cursor to beginning word'
+		-- }
 	}
 }
 
