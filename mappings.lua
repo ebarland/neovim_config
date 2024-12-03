@@ -1,146 +1,47 @@
--- n, v, i, t = mode names
+require "nvchad.mappings"
 
-local M = {}
+-- Disable mappings
+local nomap = vim.keymap.del
+nomap("n", "<leader>b")
+nomap("n", "<leader>e")
+-- nomap("n", "<C-n>")
+-- nomap("n", "<C-.>")
+-- nomap("n", "<C-m>")
+-- nomap("n", "<C-o>")
+-- nomap("n", )
 
-M.disabled = {
-	n = {
-		["<leader>b"] = "",
-		["<leader>e"] = "",
-		["<C-n>"] = "",
-		["<C-.>"] = "",
-		["<C-m>"] = "",
-		["<C-o>"] = ""
-	}
-}
+local map = vim.keymap.set
+local config_dir = vim.fn.stdpath "config"
 
---| Variable       | Default Value                                                                |
---|----------------|------------------------------------------------------------------------------|
---| %SystemDrive%  | C:                                                                           |
---| %ProgramFiles% | C:\Program Files                                                             |
---| %AppData%      | C:\Users\{username}\AppData\Roaming                                          |
---| %LocalAppData% | C:\Users\{username}\AppData\Local                                            |
---| %UserProfile%  | C:\Users\{username}                                                          |
---| %UserName%     | {username}                                                                   |
---| %COMPUTERNAME% | {computername}                                                               |
---| %PATH%         | C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;{plus program paths} |
+map(
+  "n",
+  "<leader>cc",
+  ":cd " .. config_dir .. "<CR>:NvimTreeFocus<CR>",
+  { desc = "Move to and open NVIM config directory" }
+)
+map(
+  "n",
+  "<leader>cd",
+  ":cd C:\\Development\\Git\\Private<CR>:NvimTreeFocus<CR>",
+  { desc = "Move to and open GIT directory" }
+)
+map(
+  "n",
+  "<leader>ctg",
+  ":! xcopy /s /y " .. config_dir .. "\\lua\\custom C:\\Development\\Git\\Private\\neovim_config<CR>",
+  { desc = "Copies and overwrites the local neovim config to neovim_git folder" }
+)
+map("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>", { desc = "runs build.bat with Debug config" })
+map("n", "<leader>be", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>", { desc = "runs rebuild.bat with Debug config" })
+map("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>", { desc = "runs build.bat with Release config" })
+map("n", "<leader>rr", ":! .\\scripts\\run.bat<CR>", { desc = "runs run.bat" })
+map("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
+map("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
+map("n", "<leader>rft", ":! .\\scripts\\test_failed..bat<CR>", { desc = "runs test_failed.bat" })
 
-local config_dir = vim.fn.stdpath("config")
+map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvimtree" })
+-- map("n", "", "", {desc = ""})
+-- map("n", "", "", {desc = ""})
+-- map("n", "", "", {desc = ""})
 
-M.custom = {
-	plugin = false,
-	n = {
-		["<leader>cc"] = {
-			":cd " .. config_dir .. "<CR>:NvimTreeFocus<CR>",
-			"Move to and open NVIM config directory"
-		},
-		["<leader>cd"] = {
-			":cd C:\\Development\\Git\\Private<CR>:NvimTreeFocus<CR>",
-			"Move to and open GIT directory"
-		},
-		["<leader>ctg"] = {
-			":! xcopy /s /y " .. config_dir .. "\\lua\\custom C:\\Development\\Git\\Private\\neovim_config<CR>",
-			"Copies and overwrites the local neovim config to neovim_git folder"
-		},
-		["<leader>bd"] = {
-			":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
-			"runs build.bat with Debug config"
-		},
-		["<leader>be"] = {
-			":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>",
-			"runs rebuild.bat with Debug config"
-		},
-		-- ["<leader>bb"] = {
-		-- 	":wa<CR>:! .\\scripts\\build.bat<CR>",
-		-- 	"runs build.bat"
-		-- },
-		["<leader>br"] = {
-			":wa<CR>:! .\\scripts\\build.bat Release<CR>",
-			"runs build.bat with Release config"
-		},
-		["<leader>rr"] = {
-			":! .\\scripts\\run.bat<CR>",
-			"runs run.bat"
-		},
-		["<leader>rd"] = {
-			":! .\\scripts\\debug.bat<CR>",
-			"runs debug.bat"
-		},
-		["<leader>rt"] = {
-			":! .\\scripts\\test.bat<CR>",
-			"runs test.bat"
-		},
-		["<leader>rft"] = {
-			":! .\\scripts\\test_failed.bat<CR>",
-			"runs test_failed.bat"
-		},
-		["<leader>tt"] = {
-			"<cmd> ZenMode <CR>",
-			"Toggle Zen Mode"
-		},
-		["<leader>gl"] = {
-			"<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
-			"Toggle GLSL Viewer"
-		},
-		["<leader>gd"] = {
-			"<cmd>TroubleToggle<CR>",
-			"Toggle Trouble"
-		},
-		["<leader>qp"] = {
-			"<cmd>wqa<CR>",
-			"Quit"
-		},
-		-- ["<C-BS>"] = {
-		-- 	"dw",
-		-- 	'delete from cursor to ending word'
-		-- },
-		-- ["<C-Del>"] = {
-		-- 	"db",
-		-- 	'delete from cursor to beginning word'
-		-- }
-	},
-	i = {
-		-- ["<C-BS>"] = {
-		-- 	"<C-W>",
-		-- 	'delete from cursor to beginning word'
-		-- }
-	}
-}
-
-M.dap = {
-	plugin = true,
-	n = {
-		["<F5>"] = {
-			"<cmd> DapContinue <CR>",
-			"Start/continue debugger"
-		},
-		["<S-F5>"] = {
-			"<cmd> DapTerminate <CR>",
-			"Start/continue debugger"
-		},
-		["<F9>"] = {
-			"<cmd> DapToggleBreakpoint <CR>",
-			"Add/remove breakpoint"
-		},
-		["<F10>"] = {
-			"<cmd> DapStepOver <CR>",
-			"Step over"
-		},
-		["<F11>"] = {
-			"<cmd> DapStepInto <CR>",
-			"Step into"
-		},
-		["<F4>"] = {
-			"<Cmd>lua require\"dapui\".toggle()<CR>",
-			"Toggle DAP-UI"
-		}
-	}
-}
-
-M.nvimtree = {
-	plugin = true,
-	n = {
-		["<leader>e"] = { "<cmd> NvimTreeToggle <CR>", "Toggle nvimtree" }
-	}
-}
-
-return M
+-- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")

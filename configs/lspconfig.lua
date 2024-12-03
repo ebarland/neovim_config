@@ -1,35 +1,24 @@
-local base = require "plugins.configs.lspconfig"
-local on_attach = base.on_attach
-local capabilities = base.capabilities
+-- load defaults i.e lua_lsp
+require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
 
-lspconfig.clangd.setup {
-	on_attach = function(client, bufnr)
-		client.server_capabilities.signatureHelpProvider = false
-		on_attach(client, bufnr)
-	end,
-	capabilities = capabilities
-}
+-- EXAMPLE
+local servers = { "html", "cssls", "clangd", "glsl_analyzer" }
+local nvlsp = require "nvchad.configs.lspconfig"
 
-lspconfig.glsl_analyzer.setup {
-	filetypes = { "glsl", "frag", "vert", "vs", "fs" },
-	on_attach = function(client, bufnr)
-		on_attach(client, bufnr)
-	end,
-	capabilities = capabilities
-}
+-- lsps with default config
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    on_attach = nvlsp.on_attach,
+    on_init = nvlsp.on_init,
+    capabilities = nvlsp.capabilities,
+  }
+end
 
-lspconfig.cmake.setup {
-	on_attach = function(client, bufnr)
-		on_attach(client, bufnr)
-	end,
-	capabilities = capabilities
-}
-
-lspconfig.csharp_ls.setup {
-	on_attach = function(client, bufnr)
-		on_attach(client, bufnr)
-	end,
-	capabilities = capabilities
-}
+-- configuring single server, example: typescript
+-- lspconfig.ts_ls.setup {
+--   on_attach = nvlsp.on_attach,
+--   on_init = nvlsp.on_init,
+--   capabilities = nvlsp.capabilities,
+-- }
