@@ -38,4 +38,7 @@ return {
       return conf
     end,
   },
+	{
+		"timtro/glslView-nvim", ft = 'glsl'
+	}
 }

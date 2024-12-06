@@ -16,6 +16,24 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+local on_attach = nvlsp.on_attach
+local capabilities = nvlsp.capabilities
+
+lspconfig.glsl_analyzer.setup {
+	filetypes = { "glsl", "frag", "vert", "vs", "fs" },
+	on_attach = function(client, bufnr)
+		on_attach(client, bufnr)
+	end,
+	capabilities = capabilities
+}
+
+-- lspconfig.glsl_analyzer.setup {
+--   filetypes = { "glsl", "frag", "vert", "vs", "fs" },
+--   on_attach = nvlsp.on_attach,
+--   on_init = nvlsp.on_init,
+--   capabilities = nvlsp.capabilities,
+-- }
+
 -- configuring single server, example: typescript
 -- lspconfig.ts_ls.setup {
 --   on_attach = nvlsp.on_attach,

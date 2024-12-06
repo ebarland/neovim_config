@@ -38,6 +38,7 @@ map("n", "<leader>rr", ":! .\\scripts\\run.bat<CR>", { desc = "runs run.bat" })
 map("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 map("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
 map("n", "<leader>rft", ":! .\\scripts\\test_failed..bat<CR>", { desc = "runs test_failed.bat" })
+map("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>", { desc = "Toggle GLSL Viewer" })
 
 map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvimtree" })
 -- map("n", "", "", {desc = ""})
