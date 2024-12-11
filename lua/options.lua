@@ -7,3 +7,6 @@ require "nvchad.options"
 vim.filetype.add({ extension = { vs = "glsl" } })
 vim.filetype.add({ extension = { gs = "glsl" } })
 vim.filetype.add({ extension = { fs = "glsl" } })
+
+vim.opt.swapfile = false
+
