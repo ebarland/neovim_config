@@ -4,7 +4,7 @@ require("nvchad.configs.lspconfig").defaults()
 local lspconfig = require "lspconfig"
 
 -- EXAMPLE
-local servers = { "html", "cssls", "clangd", "glsl_analyzer" }
+local servers = { "html", "cssls", "clangd", "glsl_analyzer", "cmake" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
 -- lsps with default config
@@ -20,11 +20,11 @@ local on_attach = nvlsp.on_attach
 local capabilities = nvlsp.capabilities
 
 lspconfig.glsl_analyzer.setup {
-	filetypes = { "glsl", "frag", "vert", "vs", "fs" },
-	on_attach = function(client, bufnr)
-		on_attach(client, bufnr)
-	end,
-	capabilities = capabilities
+  filetypes = { "glsl", "frag", "vert", "vs", "gs", "fs" },
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+  end,
+  capabilities = capabilities,
 }
 
 -- lspconfig.glsl_analyzer.setup {

@@ -9,6 +9,7 @@ local config_dir = vim.fn.stdpath "config"
 
 M.base46 = {
   theme = "chadracula",
+  transparency = true,
 
   -- hl_override = {
   -- 	Comment = { italic = true },
