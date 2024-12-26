@@ -41,6 +41,8 @@ map("n", "<leader>rft", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs tes
 map("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>", { desc = "Toggle GLSL Viewer" })
 
 map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvimtree" })
+map("n", "<leader>gd", "<cmd>Trouble diagnostics<CR>", { desc = "Toggle Trouble" })
+
 -- map("n", "", "", {desc = ""})
 -- map("n", "", "", {desc = ""})
 -- map("n", "", "", {desc = ""})
