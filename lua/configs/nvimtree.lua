@@ -15,7 +15,7 @@ local options = {
   filters = { dotfiles = true },
   view = { width = 40 },
   git = {
-    enable = true,
+    enable = false,
     show_on_dirs = true,
     show_on_open_dirs = true,
     disable_for_dirs = {},

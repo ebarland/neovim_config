@@ -50,11 +50,13 @@ return {
     opts = function(_, conf)
       local custom_conf = require "configs.nvimtree"
       conf.on_attach = custom_conf.on_attach
-      conf.filters.dotfiles = true
-      conf.view.width = 40
+      conf.git = custom_conf.git
+      conf.filters.dotfiles = custom_conf.filters.dotfiles
+      conf.view.width = custom_conf.width
       conf.actions = custom_conf.actions
       return conf
     end,
+    lazy = false,
   },
   {
     "timtro/glslView-nvim",

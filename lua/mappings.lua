@@ -34,11 +34,16 @@ map(
 map("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>", { desc = "runs build.bat with Debug config" })
 map("n", "<leader>be", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>", { desc = "runs rebuild.bat with Debug config" })
 map("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>", { desc = "runs build.bat with Release config" })
-map("n", "<leader>rr", ":! .\\scripts\\run.bat<CR>", { desc = "runs run.bat" })
+map("n", "<leader>rr", ":tab term .\\scripts\\run.bat<CR>", { desc = "runs run.bat" })
 map("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 map("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
 map("n", "<leader>rft", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
-map("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>", { desc = "Toggle GLSL Viewer" })
+map(
+  "n",
+  "<leader>gl",
+  "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
+  { desc = "Toggle GLSL Viewer" }
+)
 
 map("n", "<leader>e", "<cmd> NvimTreeToggle <CR>", { desc = "Toggle nvimtree" })
 map("n", "<leader>gd", "<cmd>Trouble diagnostics<CR>", { desc = "Toggle Trouble" })
