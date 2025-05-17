@@ -1,9 +1,8 @@
 return
-{ 
-	"echasnovski/mini.nvim", 
+{
+	"echasnovski/mini.nvim",
 	config = function()
 		require("mini.statusline").setup()
 	end,
-	version = false 
-	
+	version = false
 }

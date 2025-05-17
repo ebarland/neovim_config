@@ -9,6 +9,14 @@ end
 
 vim.keymap.set("n", "<leader>cc", function()  open_tree_at(vim.fn.stdpath("config")) end, { silent = true, desc = "Open NvimTree at Neovim config" })
 vim.keymap.set("n", "<leader>cd", function()  open_tree_at("C:\\Development\\Git\\Private") end, { silent = true, desc = "Open NvimTree at Dev folder" })
+vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>", { desc = "runs build.bat with Debug config" })
+vim.keymap.set("n", "<leader>be", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>", { desc = "runs rebuild.bat with Debug config" })
+vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>", { desc = "runs build.bat with Release config" })
+vim.keymap.set("n", "<leader>rr", ":tab term .\\scripts\\run.bat<CR>", { desc = "runs run.bat" })
+vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
+vim.keymap.set("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
+vim.keymap.set("n", "<leader>rft", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
+vim.keymap.set("n", "<leader>gl",  "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>", { desc = "Toggle GLSL Viewer" })
 
 -- Remap Ctrl + hjkl for window navigation
 vim.keymap.set('n', '<C-h>', '<C-w>h')
@@ -19,6 +27,9 @@ vim.keymap.set('n', '<C-l>', '<C-w>l')
 -- Delete word before cursor in Insert mode
 vim.keymap.set("i", "<C-H>", "<C-w>", { noremap = true })
 vim.keymap.set("c", "<C-h>", "<C-w>", { noremap = true })
+
+-- LSP
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true })
 
 -- Correct common command typos caused by holding Shift
 vim.cmd.cnoreabbrev("Wq wq")

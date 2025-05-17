@@ -1,12 +1,12 @@
-return 
+return
 {
-	"EdenEast/nightfox.nvim", 
+	"EdenEast/nightfox.nvim",
 	config = function()
 		require("nightfox").setup({
-				options = {
-					transparent = true
-				}
-			})
-			vim.cmd("colorscheme terafox")
+			options = {
+				transparent = false
+			}
+		})
+		vim.cmd("colorscheme terafox")
 	end
 }
