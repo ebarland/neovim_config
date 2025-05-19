@@ -3,6 +3,7 @@ require("config.keymaps")
 
 vim.lsp.enable('clangd')
 vim.lsp.enable('lua_ls')
+vim.lsp.enable('pyright')
 
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)

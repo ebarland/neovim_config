@@ -17,6 +17,8 @@ vim.o.scrolloff = 16 -- sets the number of lines to buffer while scrolling up an
 vim.o.sidescrolloff = 16
 vim.o.modifiable = true
 
+vim.o.number = true
+
 --opt.cino = '>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,m0,j0,J0,)20,*70,#0'
 --opt.cindent = true
 
