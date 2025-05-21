@@ -27,7 +27,7 @@
 ]]
 
 -- 1) Define the highlight group for parameters.
-vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = '#0000FF' })
+vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = '#BA93FC' })
 
 -- 2) Create a namespace for our extmark highlights.
 local ns = vim.api.nvim_create_namespace('ParamHighlight')

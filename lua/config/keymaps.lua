@@ -31,6 +31,10 @@ vim.keymap.set("c", "<C-h>", "<C-w>", { noremap = true })
 -- LSP
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true })
 
+-- Bufferline
+vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
+
 -- Correct common command typos caused by holding Shift
 vim.cmd.cnoreabbrev("Wq wq")
 vim.cmd.cnoreabbrev("WQ wq")
