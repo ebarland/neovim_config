@@ -1,3 +1,4 @@
+vim.g.mapleader = ' '
 vim.g.mapleader = " " -- leader = space
 vim.g.maplocalleader = "\\"
 vim.g.loaded_netrw = 1 -- spoof netrw already being loaded to avoid loading it

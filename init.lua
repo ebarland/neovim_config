@@ -1,6 +1,5 @@
 require("config.lazy")
 require("config.keymaps")
-
 vim.lsp.enable('clangd')
 vim.lsp.enable('lua_ls')
 vim.lsp.enable('pyright')
@@ -37,3 +36,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
  	end,
  })
 
+ -- Auto-insert + disable line numbers + hide status line if you like
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.cmd("startinsert")             -- Enter insert mode automatically
+    vim.wo.number = false              -- Hide line numbers in terminal
+    vim.wo.relativenumber = false      -- Hide relative line numbers
+    vim.o.scrolloff = 0                -- Set scrolloff globally (not buffer/window-local!)
+  end,
+})
