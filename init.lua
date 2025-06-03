@@ -1,6 +1,11 @@
 require("config.lazy")
 require("config.keymaps")
 
+vim.lsp.enable('clangd')
+vim.lsp.enable('lua_ls')
+vim.lsp.enable('pyright')
+
+
 vim.api.nvim_create_autocmd('LspAttach', {
 	callback = function(ev)
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)
@@ -48,12 +53,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- vim.api.nvim_create_autocmd({ 'VimEnter', 'DirChanged' }, {
 --   callback = start_clangd_for_cwd,
 -- })
-
--- If you also want clangd to attach automatically
--- the first time a C/C++ buffer opens, keep this:
-vim.lsp.enable('clangd')
-vim.lsp.enable('lua_ls')
-vim.lsp.enable('pyright')
 
 -- Auto-insert + disable line numbers + hide status line if you like
 vim.api.nvim_create_autocmd("TermOpen", {

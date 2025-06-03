@@ -1,3 +1,5 @@
+-- File: lua/plugins/nvimtree.lua
+
 local function my_on_attach(bufnr)
 	local api = require "nvim-tree.api"
 
@@ -22,8 +24,36 @@ return {
 	},
 	opts = {
 		on_attach = my_on_attach,
-		filters = { dotfiles = true },
-		view = { width = 40 },
+		-- Hide dotfiles and the `build` directory to prevent scanning
+		filters = {
+			dotfiles = true,
+			custom = { "build" },
+		},
+		view = {
+			width = 40,
+		},
+		-- Disable filesystem watchers to avoid massive rescans on build
+		filesystem_watchers = {
+			-- enable = false,
+			debounce_delay = 50,
+			ignore_dirs = {
+				"/.ccls-cache",
+				"/build",
+				"/node_modules",
+				"/target",
+			},
+		},
+		-- filesystem = {
+		-- 	use_libuv_file_watcher = false, -- for Neovim <0.8 compatibility
+		-- 	watchers = {
+		-- 		enable = false,    -- for Neovim >=0.8
+		-- 	},
+		-- },
+		-- Prevent auto-refresh when changing focused file or buffer
+		update_focused_file = {
+			enable = false,
+			update_cwd = false,
+		},
 		git = {
 			enable = false,
 			show_on_dirs = true,
@@ -40,5 +70,5 @@ return {
 				global = true,
 			},
 		},
-	}
+	},
 }
