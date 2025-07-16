@@ -55,7 +55,7 @@ vim.keymap.set("v", "<leader>fl", vim.lsp.buf.format, { remap = false })
 vim.keymap.set("n", "<leader>fd", vim.lsp.buf.format, { remap = false })
 
 vim.keymap.set("n", "ne", vim.diagnostic.goto_next)
-vim.keymap.set("n", "pe", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "be", vim.diagnostic.goto_prev)
 
 -- Bufferline
 vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })

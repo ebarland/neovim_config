@@ -13,12 +13,19 @@ vim.o.expandtab = false -- expands tab to spaces, fuck that
 vim.o.shiftwidth = 4 -- number of spaces to use for autoindenting
 vim.o.tabstop = 4 --  a tab is four spaces
 
+vim.o.foldcolumn = "1" -- show folding information in left column
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+vim.o.foldlevel = 5
+
 vim.o.wrap = false -- line wrapping
 vim.o.scrolloff = 16 -- sets the number of lines to buffer while scrolling up and down
 vim.o.sidescrolloff = 16
 vim.o.modifiable = true
 vim.o.undofile = true
 vim.o.number = true
+
+vim.o.textwidth = 360
 
 --opt.cino = '>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,m0,j0,J0,)20,*70,#0'
 --opt.cindent = true
