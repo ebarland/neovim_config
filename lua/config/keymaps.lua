@@ -13,14 +13,14 @@ vim.keymap.set("n", "<leader>cc", function() open_tree_at(vim.fn.stdpath("config
 	{ silent = true, desc = "Open NvimTree at Neovim config" })
 vim.keymap.set("n", "<leader>cd", function() open_tree_at("C:\\Development\\Git\\Private") end,
 	{ silent = true, desc = "Open NvimTree at Dev folder" })
-vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
-	{ desc = "runs build.bat with Debug config" })
-vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>",
-	{ desc = "runs build.bat with Release config" })
-vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>",
-	{ desc = "runs rebuild.bat with Debug config" })
-vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\rebuild.bat Release<CR>",
-	{ desc = "runs rebuild.bat with Debug config" })
+vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\compile.bat Debug<CR>",
+	{ desc = "runs compile.bat with Debug config" })
+vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\compile.bat Release<CR>",
+	{ desc = "runs compile.bat with Release config" })
+vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\recompile.bat Debug<CR>",
+	{ desc = "runs recompile.bat with Debug config" })
+vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\recompile.bat Release<CR>",
+	{ desc = "runs recompile.bat with Release config" })
 vim.keymap.set("n", "<leader>rr", ":! .\\scripts\\run.bat<CR>:edit output.log<CR>", { desc = "runs and opens log" })
 vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 vim.keymap.set("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
@@ -54,8 +54,8 @@ vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = tru
 vim.keymap.set("v", "<leader>fl", vim.lsp.buf.format, { remap = false })
 vim.keymap.set("n", "<leader>fd", vim.lsp.buf.format, { remap = false })
 
-vim.keymap.set("n", "ne", vim.diagnostic.goto_next)
-vim.keymap.set("n", "be", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "<leader>ne", vim.diagnostic.goto_next)
+vim.keymap.set("n", "<leader>pe", vim.diagnostic.goto_prev)
 
 -- Bufferline
 vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })
