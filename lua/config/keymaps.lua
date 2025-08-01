@@ -13,16 +13,71 @@ vim.keymap.set("n", "<leader>cc", function() open_tree_at(vim.fn.stdpath("config
 	{ silent = true, desc = "Open NvimTree at Neovim config" })
 vim.keymap.set("n", "<leader>cd", function() open_tree_at("C:\\Development\\Git\\Private") end,
 	{ silent = true, desc = "Open NvimTree at Dev folder" })
-vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\compile.bat Debug<CR>",
-	{ desc = "runs compile.bat with Debug config" })
-vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\compile.bat Release<CR>",
-	{ desc = "runs compile.bat with Release config" })
-vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\recompile.bat Debug<CR>",
-	{ desc = "runs recompile.bat with Debug config" })
-vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\recompile.bat Release<CR>",
-	{ desc = "runs recompile.bat with Release config" })
-vim.keymap.set("n", "<leader>rr", ":! .\\scripts\\run.bat<CR>:edit output.log<CR>", { desc = "runs and opens log" })
-vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
+
+vim.keymap.set("n", "<leader>bc", ":wa<CR>:! .\\scripts\\check.bat<CR>", { desc = "runs check.bat" })
+
+vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>", { desc = "runs build.bat with Debug config" })
+vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>", { desc = "runs build.bat with Release config" })
+vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>", { desc = "runs rebuild.bat with Debug config" })
+vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\rebuild.bat Release<CR>", { desc = "runs rebuild.bat with Release config" })
+
+vim.keymap.set("n", "<leader>rd", ":tab term .\\scripts\\run.bat Debug<CR>:edit output.log<CR>",
+	{ desc = "runs in debug mode and opens log" })
+
+vim.keymap.set("n", "<leader>rd", function()
+	local logfile = "output.log"
+
+	-- new tab with a terminal
+	vim.cmd("tabnew")
+	local term_buf = vim.api.nvim_get_current_buf()
+
+	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat", "Debug" }, {
+		on_exit = function()
+			vim.schedule(function()
+				-- dump terminal scrollback to file
+				vim.api.nvim_buf_call(term_buf, function()
+					vim.cmd("silent w! " .. logfile)
+				end)
+				-- optional: close the terminal tab/buffer
+				vim.api.nvim_buf_delete(term_buf, { force = true })
+
+				vim.cmd("edit " .. logfile)
+			end)
+		end,
+	})
+
+	vim.cmd("startinsert") -- so stdin works
+end, { desc = "Run (release), log output, then open log" })
+
+
+vim.keymap.set("n", "<leader>rr", function()
+	local logfile = "output.log"
+
+	-- new tab with a terminal
+	vim.cmd("tabnew")
+	local term_buf = vim.api.nvim_get_current_buf()
+
+	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat", "Release" }, {
+		on_exit = function()
+			vim.schedule(function()
+				-- dump terminal scrollback to file
+				vim.api.nvim_buf_call(term_buf, function()
+					vim.cmd("silent w! " .. logfile)
+				end)
+				-- optional: close the terminal tab/buffer
+				vim.api.nvim_buf_delete(term_buf, { force = true })
+
+				vim.cmd("edit " .. logfile)
+			end)
+		end,
+	})
+
+	vim.cmd("startinsert") -- so stdin works
+end, { desc = "Run (release), log output, then open log" })
+
+
+-- vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
+
 vim.keymap.set("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
 vim.keymap.set("n", "<leader>rft", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
@@ -46,16 +101,16 @@ vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-l>', '<C-w>l')
 
 -- Delete word before cursor in Insert mode
-vim.keymap.set("i", "<C-H>", "<C-w>", { noremap = true })
-vim.keymap.set("c", "<C-h>", "<C-w>", { noremap = true })
+vim.keymap.set("i", "<C-H>", "<C-w>", { noremap = true, desc = 'delete word before cursor' })
+vim.keymap.set("c", "<C-h>", "<C-w>", { noremap = true, desc = 'delete word before cursor' })
 
 -- LSP
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true })
-vim.keymap.set("v", "<leader>fl", vim.lsp.buf.format, { remap = false })
-vim.keymap.set("n", "<leader>fd", vim.lsp.buf.format, { remap = false })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { noremap = true, silent = true, desc = 'GOTO definition' })
+vim.keymap.set("v", "<leader>fl", vim.lsp.buf.format, { remap = false, desc = 'format line' })
+vim.keymap.set("n", "<leader>fd", vim.lsp.buf.format, { remap = false, desc = 'format file' })
 
-vim.keymap.set("n", "<leader>ne", vim.diagnostic.goto_next)
-vim.keymap.set("n", "<leader>pe", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "<leader>ne", vim.diagnostic.goto_next, { desc = 'Next diagnostic' })
+vim.keymap.set("n", "<leader>pe", vim.diagnostic.goto_prev, { desc = 'Previous diagnostic' })
 
 -- Bufferline
 vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })

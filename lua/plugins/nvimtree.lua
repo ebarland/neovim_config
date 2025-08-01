@@ -1,5 +1,3 @@
--- File: lua/plugins/nvimtree.lua
-
 local function my_on_attach(bufnr)
 	local api = require "nvim-tree.api"
 
@@ -28,6 +26,7 @@ return {
 		filters = {
 			dotfiles = true,
 			custom = { "build" },
+			exclude = { "build.bat", "rebuild.bat" }
 		},
 		view = {
 			width = 40,
@@ -43,13 +42,6 @@ return {
 				"/target",
 			},
 		},
-		-- filesystem = {
-		-- 	use_libuv_file_watcher = false, -- for Neovim <0.8 compatibility
-		-- 	watchers = {
-		-- 		enable = false,    -- for Neovim >=0.8
-		-- 	},
-		-- },
-		-- Prevent auto-refresh when changing focused file or buffer
 		update_focused_file = {
 			enable = false,
 			update_cwd = false,
