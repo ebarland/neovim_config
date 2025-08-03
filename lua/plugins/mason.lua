@@ -5,11 +5,10 @@ return {
       "vue_ls", "vtsls", "eslint",
       "clangd", "lua_ls", "pyright", "rust_analyzer",
     },
-    -- optional: turn off auto-enabling if you prefer your own vim.lsp.enable()
-    -- automatic_enable = false,
+    automatic_enable = false, -- <— important when using vim.lsp.enable()
   },
   dependencies = {
-    { "mason-org/mason.nvim", opts = {} }, -- still need Mason itself
+    { "mason-org/mason.nvim", opts = {} },
     "neovim/nvim-lspconfig",
   },
 }

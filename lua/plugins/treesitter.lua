@@ -6,9 +6,10 @@ return {
 	},
 	config = function()
 		require("nvim-treesitter.configs").setup {
+			indent = { enable = true },
 			ensure_installed = {
 				-- Front‑end
-				"vue", "typescript", "javascript", "html", "css", "scss", "json",
+				"vue", "typescript", "javascript", "html", "css", "scss", "json", "tsx",
 				-- Back‑end
 				"c", "cpp", "lua", "python", "rust",
 			},
