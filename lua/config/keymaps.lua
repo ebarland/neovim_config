@@ -116,6 +116,10 @@ vim.keymap.set("n", "<leader>pe", vim.diagnostic.goto_prev, { desc = 'Previous d
 vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buffer' })
 vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
 
+-- normalize unicode minus/dash to ASCII hyphen in insert mode
+vim.keymap.set('i', '−', '-', { buffer = true })   -- U+2212
+vim.keymap.set('i', '–', '-', { buffer = true })   -- U+2013
+
 -- Correct common command typos caused by holding Shift
 vim.cmd.cnoreabbrev("Wq wq")
 vim.cmd.cnoreabbrev("WQ wq")
