@@ -3,8 +3,8 @@ return {
 	"saghen/blink.cmp",
 	version = "1.*",
 	dependencies = {
-		"L3MON4D3/LuaSnip",
-		"rafamadriz/friendly-snippets",
+		-- "L3MON4D3/LuaSnip",
+		-- "rafamadriz/friendly-snippets",
 	},
 	opts = {
 		keymap = { preset = "super-tab" },
@@ -28,14 +28,14 @@ return {
 				show_on_backspace_after_insert_enter = true,
 				show_on_backspace_after_accept = true,
 			},
-    		ghost_text = { enabled = true },  -- inline preview of the currently selected item
+			ghost_text = { enabled = true }, -- inline preview of the currently selected item
 		},
 		sources = {
 			default = { "lsp", "snippets", "path", "buffer" },
 			providers = {
-				snippets = {
-					score_offset = 10, -- nudge snippets above bare LSP attrs
-				},
+				-- snippets = {
+				-- 	score_offset = 10, -- nudge snippets above bare LSP attrs
+				-- },
 			},
 		},
 
