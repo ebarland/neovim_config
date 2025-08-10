@@ -2,10 +2,6 @@
 return {
 	"saghen/blink.cmp",
 	version = "1.*",
-	dependencies = {
-		-- "L3MON4D3/LuaSnip",
-		-- "rafamadriz/friendly-snippets",
-	},
 	opts = {
 		keymap = { preset = "super-tab" },
 		appearance = { nerd_font_variant = "mono" },
@@ -23,7 +19,7 @@ return {
 			},
 			trigger = {
 				show_on_keyword = true,
-				show_on_backspace = true,
+				-- show_on_backspace = true,
 				show_on_backspace_in_keyword = true,
 				show_on_backspace_after_insert_enter = true,
 				show_on_backspace_after_accept = true,
@@ -32,11 +28,6 @@ return {
 		},
 		sources = {
 			default = { "lsp", "snippets", "path", "buffer" },
-			providers = {
-				-- snippets = {
-				-- 	score_offset = 10, -- nudge snippets above bare LSP attrs
-				-- },
-			},
 		},
 
 		fuzzy = { implementation = "prefer_rust_with_warning" },

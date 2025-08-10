@@ -16,7 +16,6 @@ local function enable_inlay_hints(bufnr, enable)
 		pcall(vim.lsp.inlay_hint.enable, bufnr, enable) -- older signature
 	end
 end
-
 local function default_on_attach(client, bufnr)
 	if client.server_capabilities.inlayHintProvider then
 		enable_inlay_hints(bufnr, true)
@@ -32,43 +31,21 @@ lsp.config("lua_ls", {
 	},
 })
 
--- clangd
-lsp.config("clangd", {
-	capabilities = capabilities,
-	on_attach = function(client, bufnr)
-		default_on_attach(client, bufnr)
-		pcall(function()
-			require("workspace-diagnostics").populate_workspace_diagnostics(client, bufnr)
-		end)
-		vim.diagnostic.config({ update_in_insert = true, severity_sort = true })
-	end,
-})
+lsp.config("clangd", { capabilities = capabilities, on_attach = default_on_attach, })
+lsp.config("pyright", { capabilities = capabilities, on_attach = default_on_attach, })
+lsp.config("rust_analyzer", { capabilities = capabilities, on_attach = default_on_attach, })
 
--- --- Vue & TS setup (Hybrid) --------------------------------------------
--- vue_ls handles templates (HTML / directives / props)
 lsp.config("vue_ls", {
 	capabilities = capabilities,
-	root_dir = root,
-	-- Flip this if you want full takeover (vue_ls handles TS too):
-	-- settings = { vue = { hybridMode = false } },
-	settings = {
-		vue = {
-			-- inlayHints = {
-			-- 	destructuredProps    = { enabled = true },
-			-- 	inlineHandlerLoading = { enabled = true },
-			-- 	missingProps         = { enabled = true },
-			-- 	optionsWrapper       = { enabled = true },
-			-- 	vBindShorthand       = { enabled = true },
-			-- },
-		},
-	},
+	on_attach = default_on_attach,
+	root_dir = root, -- keep from spawning multiple LSPs when opening node_modules files
 })
 
--- vtsls handles <script> logic with @vue/typescript-plugin
 lsp.config("vtsls", {
 	capabilities = capabilities,
-	root_dir = root,
+	root_dir = root, -- keep from spawning multiple LSPs when opening node_modules files
 	single_file_support = false,
+	on_attach = default_on_attach,
 	filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" },
 	settings = {
 		vtsls = {
@@ -78,54 +55,15 @@ lsp.config("vtsls", {
 						name = "@vue/typescript-plugin",
 						languages = { "vue" },
 						configNamespace = "typescript",
-						location = vim.fs.joinpath(
-							vim.fn.stdpath("data"), "mason", "packages",
-							"vue-language-server", "node_modules", "@vue", "language-server"
+						location = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", "vue-language-server",
+							"node_modules", "@vue", "language-server"
 						),
 					},
-				},
-			},
-		},
-
-		-- JavaScript parity with TypeScript
-		javascript = {
-			suggest = { completeFunctionCalls = true },
-			-- preferences = {
-			-- 	includeCompletionsForModuleExports = true,
-			-- 	includeCompletionsWithSnippetText = true,
-			-- 	includeCompletionsWithInsertTextCompletions = true,
-			-- },
-			-- inlayHints = {
-			-- 	enumMemberValues         = { enabled = true },
-			-- 	functionLikeReturnTypes  = { enabled = true },
-			-- 	parameterNames           = { enabled = "all" },
-			-- 	parameterTypes           = { enabled = true, suppressWhenArgumentMatchesName = true },
-			-- 	propertyDeclarationTypes = { enabled = true },
-			-- 	variableTypes            = { enabled = true },
-			-- },
-		},
-
-		-- TypeScript (match JS)
-		typescript = {
-			suggest = { completeFunctionCalls = true },
-			-- inlayHints = {
-			-- 	enumMemberValues         = { enabled = true },
-			-- 	functionLikeReturnTypes  = { enabled = true },
-			-- 	parameterNames           = { enabled = "all" },
-			-- 	parameterTypes           = { enabled = true, suppressWhenArgumentMatchesName = true },
-			-- 	propertyDeclarationTypes = { enabled = true },
-			-- 	variableTypes            = { enabled = true },
-			-- },
-		},
-	},
+				}
+			}
+		}
+	}
 })
-
--- eslint
-lsp.config("eslint", { capabilities = capabilities })
-
--- pyright / rust_analyzer
-lsp.config("pyright", { capabilities = capabilities })
-lsp.config("rust_analyzer", { capabilities = capabilities })
 
 -- Signature help popup styling (shared by all LSPs)
 lsp.handlers["textDocument/signatureHelp"] = lsp.with(
@@ -142,13 +80,11 @@ vim.keymap.set("i", "<C-s>", function()
 	vim.lsp.buf.signature_help()
 end, { desc = "Show signature help" })
 
--- Enable the set
 lsp.enable({
 	"lua_ls",
 	"clangd",
 	"pyright",
 	"rust_analyzer",
-	"eslint",
 	"vtsls",
 	"vue_ls",
 })

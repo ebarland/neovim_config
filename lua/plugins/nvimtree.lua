@@ -1,3 +1,4 @@
+-- lua/plugins/nvimtree.lua
 local function my_on_attach(bufnr)
 	local api = require "nvim-tree.api"
 
