@@ -19,17 +19,15 @@ return {
 			},
 			trigger = {
 				show_on_keyword = true,
-				-- show_on_backspace = true,
 				show_on_backspace_in_keyword = true,
 				show_on_backspace_after_insert_enter = true,
 				show_on_backspace_after_accept = true,
 			},
-			ghost_text = { enabled = true }, -- inline preview of the currently selected item
+			ghost_text = { enabled = true },
 		},
 		sources = {
 			default = { "lsp", "snippets", "path", "buffer" },
 		},
-
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 	opts_extend = { "sources.default" },

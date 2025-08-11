@@ -1,24 +1,12 @@
 -- lua/config/lsp.lua
-local root         = require("config.lsp_root")
 local lsp          = vim.lsp
 
--- Capabilities (blink adds snippetSupport, etc.)
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities       = require("blink.cmp").get_lsp_capabilities(capabilities)
 
--- Inlay hints: work across Neovim versions (0.11 new API, older fallback)
-local function enable_inlay_hints(bufnr, enable)
-	enable = enable ~= false
-	local ok_new = pcall(function()
-		vim.lsp.inlay_hint.enable(enable, { bufnr = bufnr }) -- 0.11+
-	end)
-	if not ok_new then
-		pcall(vim.lsp.inlay_hint.enable, bufnr, enable) -- older signature
-	end
-end
 local function default_on_attach(client, bufnr)
 	if client.server_capabilities.inlayHintProvider then
-		enable_inlay_hints(bufnr, true)
+		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 	end
 end
 
@@ -27,13 +15,30 @@ lsp.config("lua_ls", {
 	capabilities = capabilities,
 	on_attach = default_on_attach,
 	settings = {
-		Lua = { diagnostics = { globals = { "vim" } } },
+		Lua = { diagnostics = { globals = { "vim" } } }, -- fix lua LSP warning about vim keyword/namespace
 	},
 })
 
-lsp.config("clangd", { capabilities = capabilities, on_attach = default_on_attach, })
+lsp.config("clangd", {
+	capabilities = capabilities,
+	on_attach = default_on_attach,
+	cmd = {
+		"clangd",
+		"--background-index",
+		"--header-insertion=never",
+		"--query-driver=C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/bin/**/cl.exe," ..
+			"C:/msys64/mingw64/bin/g++.exe," ..
+			"C:/msys64/ucrt64/bin/g++.exe," ..
+			"C:/Program Files/LLVM/bin/clang++.exe",
+		"--pch-storage=memory",
+		"--clang-tidy",
+		"--log=error",
+	},
+})
 lsp.config("pyright", { capabilities = capabilities, on_attach = default_on_attach, })
 lsp.config("rust_analyzer", { capabilities = capabilities, on_attach = default_on_attach, })
+
+local root = require("config.lsp_root")
 
 lsp.config("vue_ls", {
 	capabilities = capabilities,
@@ -65,20 +70,14 @@ lsp.config("vtsls", {
 	}
 })
 
--- Signature help popup styling (shared by all LSPs)
 lsp.handlers["textDocument/signatureHelp"] = lsp.with(
 	lsp.handlers.signature_help,
 	{
-		border    = "rounded", -- match your docs window style
-		focusable = false, -- doesn't steal focus
-		relative  = "cursor", -- follows your cursor
+		border    = "rounded",
+		focusable = false,
+		relative  = "cursor",
 	}
 )
-
--- Optional: Trigger signature help manually with <C-S> if needed
-vim.keymap.set("i", "<C-s>", function()
-	vim.lsp.buf.signature_help()
-end, { desc = "Show signature help" })
 
 lsp.enable({
 	"lua_ls",

@@ -11,7 +11,6 @@ return {
 		toggle_key = "<C-s>",     -- press in insert mode to toggle
 		select_signature_key = "<C-n>", -- cycle overloads
 		move_cursor_key = "<C-m>", -- jump to param (optional)
-		-- Automatically trigger on ( and , — works even when servers are picky
 		always_trigger = true,
 		zindex = 60,
 	},

@@ -7,7 +7,7 @@ return {
 	},
 	config = function()
 		require("nvim-treesitter.configs").setup {
-			indent = { enable = true },
+			indent = { enable = true, disable = { 'c', 'cpp' } },
 			ensure_installed = {
 				-- Front‑end
 				"vue", "typescript", "javascript", "html", "css", "scss", "json", "tsx",
