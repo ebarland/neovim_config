@@ -22,14 +22,19 @@ lsp.config("lua_ls", {
 lsp.config("clangd", {
 	capabilities = capabilities,
 	on_attach = default_on_attach,
+	root_markers = { "compile_commands.json", "compile_flags.txt" },
+	filetypes = { "c", "cpp" },
+	flags = {
+		debounce_text_changes = 100,
+	},
 	cmd = {
 		"clangd",
 		"--background-index",
 		"--header-insertion=never",
 		"--query-driver=C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/bin/**/cl.exe," ..
-			"C:/msys64/mingw64/bin/g++.exe," ..
-			"C:/msys64/ucrt64/bin/g++.exe," ..
-			"C:/Program Files/LLVM/bin/clang++.exe",
+		"C:/msys64/mingw64/bin/g++.exe," ..
+		"C:/msys64/ucrt64/bin/g++.exe," ..
+		"C:/Program Files/LLVM/bin/clang++.exe",
 		"--pch-storage=memory",
 		"--clang-tidy",
 		"--log=error",
