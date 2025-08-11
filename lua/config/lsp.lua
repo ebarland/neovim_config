@@ -23,7 +23,9 @@ lsp.config("clangd", {
 	capabilities = capabilities,
 	on_attach = default_on_attach,
 	root_markers = { "compile_commands.json", "compile_flags.txt" },
-	filetypes = { "c", "cpp" },
+	filetypes = { "c", "cpp", "h", "hpp" },
+	init_option = { fallbackFlags = { "-std=c++2a" } },
+	single_file_support = true,
 	flags = {
 		debounce_text_changes = 100,
 	},
@@ -38,6 +40,11 @@ lsp.config("clangd", {
 		"--pch-storage=memory",
 		"--clang-tidy",
 		"--log=error",
+		"--all-scopes-completion",
+		"--pretty",
+		"--header-insertion-decorators",
+		"--function-arg-placeholders",
+		"--completion-style=detailed",
 	},
 })
 lsp.config("pyright", { capabilities = capabilities, on_attach = default_on_attach, })

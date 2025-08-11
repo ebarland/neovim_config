@@ -34,6 +34,8 @@ vim.o.winborder = "rounded"
 
 vim.o.whichwrap = "b,s"
 
+vim.opt.shortmess:append("I")
+
 vim.filetype.add { extension = { vs = "glsl" } }
 vim.filetype.add { extension = { gs = "glsl" } }
 vim.filetype.add { extension = { fs = "glsl" } }

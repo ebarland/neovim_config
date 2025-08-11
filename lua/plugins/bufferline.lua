@@ -5,6 +5,7 @@ return {
 	config = function()
 		require("bufferline").setup {
 			options = {
+				always_show_bufferline = false, -- 👈 add this
 				highlights = {
 					-- this is the group that styles the *selected* buffer tab
 					buffer_selected    = {
