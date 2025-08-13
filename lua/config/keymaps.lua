@@ -16,39 +16,14 @@ vim.keymap.set("n", "<leader>cd", function() open_tree_at("C:\\Development\\Git\
 
 vim.keymap.set("n", "<leader>bc", ":wa<CR>:! .\\scripts\\check.bat<CR>", { desc = "runs check.bat" })
 
-vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>", { desc = "runs build.bat with Debug config" })
-vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>", { desc = "runs build.bat with Release config" })
-vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>", { desc = "runs rebuild.bat with Debug config" })
-vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\rebuild.bat Release<CR>", { desc = "runs rebuild.bat with Release config" })
-
-vim.keymap.set("n", "<leader>rd", ":tab term .\\scripts\\run.bat Debug<CR>:edit output.log<CR>",
-	{ desc = "runs in debug mode and opens log" })
-
-vim.keymap.set("n", "<leader>rd", function()
-	local logfile = "output.log"
-
-	-- new tab with a terminal
-	vim.cmd("tabnew")
-	local term_buf = vim.api.nvim_get_current_buf()
-
-	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat", "Debug" }, {
-		on_exit = function()
-			vim.schedule(function()
-				-- dump terminal scrollback to file
-				vim.api.nvim_buf_call(term_buf, function()
-					vim.cmd("silent w! " .. logfile)
-				end)
-				-- optional: close the terminal tab/buffer
-				vim.api.nvim_buf_delete(term_buf, { force = true })
-
-				vim.cmd("edit " .. logfile)
-			end)
-		end,
-	})
-
-	vim.cmd("startinsert") -- so stdin works
-end, { desc = "Run (release), log output, then open log" })
-
+vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
+	{ desc = "runs build.bat with Debug config" })
+vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>",
+	{ desc = "runs build.bat with Release config" })
+vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>",
+	{ desc = "runs rebuild.bat with Debug config" })
+vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\rebuild.bat Release<CR>",
+	{ desc = "runs rebuild.bat with Release config" })
 
 vim.keymap.set("n", "<leader>rr", function()
 	local logfile = "output.log"
@@ -57,26 +32,21 @@ vim.keymap.set("n", "<leader>rr", function()
 	vim.cmd("tabnew")
 	local term_buf = vim.api.nvim_get_current_buf()
 
-	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat", "Release" }, {
+	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat", "Debug" }, {
+		cwd = vim.fn.getcwd(), -- ensure relative paths resolve as expected
 		on_exit = function()
 			vim.schedule(function()
-				-- dump terminal scrollback to file
-				vim.api.nvim_buf_call(term_buf, function()
-					vim.cmd("silent w! " .. logfile)
-				end)
-				-- optional: close the terminal tab/buffer
-				vim.api.nvim_buf_delete(term_buf, { force = true })
-
+				-- DO NOT write the terminal buffer to the log file.
+				-- Just open the log the batch/exe produced:
 				vim.cmd("edit " .. logfile)
 			end)
 		end,
 	})
 
-	vim.cmd("startinsert") -- so stdin works
-end, { desc = "Run (release), log output, then open log" })
+	vim.cmd("startinsert")
+end, { desc = "Run (debug), then open log" })
 
-
--- vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
+vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 
 vim.keymap.set("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
 vim.keymap.set("n", "<leader>rft", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
@@ -117,8 +87,8 @@ vim.keymap.set('n', '<Tab>', '<Cmd>BufferLineCycleNext<CR>', { desc = 'Next buff
 vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
 
 -- normalize unicode minus/dash to ASCII hyphen in insert mode
-vim.keymap.set('i', '−', '-', { buffer = true })   -- U+2212
-vim.keymap.set('i', '–', '-', { buffer = true })   -- U+2013
+vim.keymap.set('i', '−', '-', { buffer = true }) -- U+2212
+vim.keymap.set('i', '–', '-', { buffer = true }) -- U+2013
 
 -- Correct common command typos caused by holding Shift
 vim.cmd.cnoreabbrev("Wq wq")
