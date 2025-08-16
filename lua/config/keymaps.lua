@@ -28,23 +28,31 @@ vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\rebuild.bat Release<CR
 vim.keymap.set("n", "<leader>rr", function()
 	local logfile = "output.log"
 
-	-- new tab with a terminal
+	-- create new tab with terminal
 	vim.cmd("tabnew")
 	local term_buf = vim.api.nvim_get_current_buf()
+	local term_win = vim.api.nvim_get_current_win()
 
-	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat", "Debug" }, {
-		cwd = vim.fn.getcwd(), -- ensure relative paths resolve as expected
+	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat" }, {
+		cwd = vim.fn.getcwd(),
 		on_exit = function()
 			vim.schedule(function()
-				-- DO NOT write the terminal buffer to the log file.
-				-- Just open the log the batch/exe produced:
+				-- completely wipe the terminal buffer
+				if vim.api.nvim_buf_is_valid(term_buf) then
+					vim.api.nvim_buf_delete(term_buf, { force = true })
+				end
+				-- close the now-empty window
+				if vim.api.nvim_win_is_valid(term_win) then
+					vim.api.nvim_win_close(term_win, true)
+				end
+				-- open the log file
 				vim.cmd("edit " .. logfile)
 			end)
 		end,
 	})
 
 	vim.cmd("startinsert")
-end, { desc = "Run (debug), then open log" })
+end, { desc = "Run, then open log and fully remove terminal" })
 
 vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 

@@ -49,6 +49,8 @@ lsp.config("clangd", {
 })
 lsp.config("pyright", { capabilities = capabilities, on_attach = default_on_attach, })
 lsp.config("rust_analyzer", { capabilities = capabilities, on_attach = default_on_attach, })
+lsp.config("cmake",
+	{ capabilities = capabilities, on_attach = default_on_attach, filetypes = { "cmake" } })
 
 local root = require("config.lsp_root")
 
@@ -93,6 +95,7 @@ lsp.handlers["textDocument/signatureHelp"] = lsp.with(
 
 lsp.enable({
 	"lua_ls",
+	"cmake",
 	"clangd",
 	"pyright",
 	"rust_analyzer",

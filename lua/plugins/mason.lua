@@ -3,7 +3,7 @@ return {
 	"mason-org/mason-lspconfig.nvim",
 	opts = {
 		ensure_installed = {
-			"vue_ls", "vtsls", "clangd", "lua_ls", "pyright", "rust_analyzer",
+			"vue_ls", "vtsls", "clangd", "lua_ls", "pyright", "rust_analyzer", "cmake"
 		},
 		automatic_enable = false,
 	},

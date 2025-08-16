@@ -89,6 +89,7 @@ return {
 		vim.api.nvim_set_hl(0, "MechMetal", { fg = "#a6adc8" }) -- steel (G)
 		vim.api.nvim_set_hl(0, "MechWire", { fg = "#585b70" }) -- wire (g)
 		vim.api.nvim_set_hl(0, "MechEye", { fg = "#40a02b" }) -- eyes (=)
+		vim.api.nvim_set_hl(0, "MechWhite", { fg = "#1fa28b" }) -- eyes (=)
 
 		-- Get lines + auto-inferred highlight ranges from art.lua
 		local lines, ranges = art.render()
