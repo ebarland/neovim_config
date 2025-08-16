@@ -106,11 +106,46 @@ set_folds("typescript", ts_js_folds)
 -- set_folds("c_sharp", cs_folds)
 
 -- Recompute & close folds when opening / entering windows
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufWinEnter" }, {
+vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 	callback = function()
 		vim.cmd("silent! normal! zx") -- recompute folds after parsers/queries load
 		vim.cmd("silent! normal! zM") -- close all (only functions will close)
 	end,
+})
+
+
+-- Save folds when leaving buffer
+vim.api.nvim_create_autocmd("BufWinLeave", {
+	pattern = "*",
+	callback = function()
+		vim.cmd("silent! mkview")
+	end,
+})
+
+-- Restore folds when entering buffer
+vim.api.nvim_create_autocmd("BufWinEnter", {
+	pattern = "*",
+	callback = function()
+		vim.cmd("silent! loadview")
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "cmake",
+    callback = function()
+        vim.keymap.set("n", "<leader>fd", function()
+            local formatted = vim.fn.system(
+                { "C:/Users/Egil/AppData/Roaming/Python/Python313/Scripts/cmake-format.exe", vim.fn.expand("%:p") }
+            )
+            if vim.v.shell_error == 0 then
+                local curpos = vim.api.nvim_win_get_cursor(0)
+                vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(formatted, "\n"))
+                vim.api.nvim_win_set_cursor(0, curpos)
+            else
+                print("cmake-format error: " .. formatted)
+            end
+        end, { buffer = true, desc = "Format CMake file" })
+    end,
 })
 
 -- QoL mappings
