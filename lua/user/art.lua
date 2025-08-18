@@ -1,4 +1,4 @@
--- nvim/lua/plugins/art.lua
+-- lua/plugins/art.lua
 -- Pure ASCII art + an auto-highlighter that infers colors from characters:
 --   r/R -> Robe (default fill; we won't record ranges for these)
 --   =   -> Eyes (MechEye)

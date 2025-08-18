@@ -18,9 +18,9 @@ return {
 	"nvim-tree/nvim-tree.lua",
 	version = "*",
 	lazy = false,
-	dependencies = {
-		"nvim-tree/nvim-web-devicons",
-	},
+	-- dependencies = {
+	-- 	"nvim-tree/nvim-web-devicons",
+	-- },
 	opts = {
 		on_attach = my_on_attach,
 		-- Hide dotfiles and the `build` directory to prevent scanning
@@ -63,5 +63,7 @@ return {
 				global = true,
 			},
 		},
+		sync_root_with_cwd = true,
+		respect_buf_cwd = true,
 	},
 }

@@ -1,7 +1,7 @@
--- nvim/lua/plugins/alpha.lua
+-- lua/plugins/alpha.lua
 return {
 	"goolord/alpha-nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	-- dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
 		-- --- Stealth Alpha: no flicker, full restore ---
 

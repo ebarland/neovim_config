@@ -1,4 +1,4 @@
--- %USERPROFILE%\AppData\Local\nvim\after\plugin\param_highlight.lua
+-- after\plugin\param_highlight.lua
 
 --[[
   param_highlight.lua

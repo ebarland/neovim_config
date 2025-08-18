@@ -1,3 +1,4 @@
+-- lua/plugins/colorscheme.lua
 return
 {
 	"EdenEast/nightfox.nvim",

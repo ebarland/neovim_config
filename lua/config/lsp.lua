@@ -62,7 +62,7 @@ lsp.config("vue_ls", {
 
 lsp.config("vtsls", {
 	capabilities = capabilities,
-	root_dir = root, -- keep from spawning multiple LSPs when opening node_modules files
+	root_dir = root,
 	single_file_support = false,
 	on_attach = default_on_attach,
 	filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" },
@@ -74,14 +74,43 @@ lsp.config("vtsls", {
 						name = "@vue/typescript-plugin",
 						languages = { "vue" },
 						configNamespace = "typescript",
-						location = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", "vue-language-server",
+						location = vim.fs.joinpath(
+							vim.fn.stdpath("data"),
+							"mason", "packages", "vue-language-server",
 							"node_modules", "@vue", "language-server"
 						),
 					},
-				}
-			}
-		}
-	}
+				},
+			},
+		},
+	},
+})
+
+lsp.config("eslint", {
+	capabilities = capabilities,
+	on_attach = function(client, bufnr)
+		default_on_attach(client, bufnr)
+		-- Optional: auto-fix on save once, in addition to Conform
+		vim.api.nvim_create_autocmd("BufWritePre", {
+			buffer = bufnr,
+			callback = function()
+				vim.lsp.buf.code_action({
+					context = { only = { "source.fixAll.eslint" } },
+					apply = true,
+				})
+			end,
+		})
+	end,
+	settings = { -- works with flat or legacy config
+		workingDirectory = { mode = "auto" },
+	},
+})
+
+lsp.config("tailwindcss", {
+	capabilities = capabilities,
+	on_attach = default_on_attach,
+	root_dir = root,
+	filetypes = { "vue", "typescriptreact", "javascriptreact", "typescript", "javascript", "html", "css" },
 })
 
 lsp.handlers["textDocument/signatureHelp"] = lsp.with(
@@ -101,4 +130,6 @@ lsp.enable({
 	"rust_analyzer",
 	"vtsls",
 	"vue_ls",
+	"eslint",
+	"tailwindcss",
 })

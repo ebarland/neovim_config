@@ -1,3 +1,4 @@
+-- lua/config/keymaps.lua
 vim.keymap.set('n', '<leader>e', "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
 
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
@@ -97,6 +98,10 @@ vim.keymap.set('n', '<S-Tab>', '<Cmd>BufferLineCyclePrev<CR>', { desc = 'Previou
 -- normalize unicode minus/dash to ASCII hyphen in insert mode
 vim.keymap.set('i', '−', '-', { buffer = true }) -- U+2212
 vim.keymap.set('i', '–', '-', { buffer = true }) -- U+2013
+
+-- Visual paste: keep your last yank intact
+-- Deletes selection to the black-hole register, then pastes what you yanked.
+vim.keymap.set("x", "p", [["_dP]], { desc = "Paste without overwriting yank" })
 
 -- Correct common command typos caused by holding Shift
 vim.cmd.cnoreabbrev("Wq wq")
