@@ -34,7 +34,7 @@ vim.o.modifiable = true
 vim.o.undofile = true
 vim.o.number = true
 
-vim.o.textwidth = 360
+vim.o.textwidth = 120 
 
 vim.o.winborder = "rounded"
 
