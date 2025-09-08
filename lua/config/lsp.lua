@@ -4,11 +4,93 @@ local lsp          = vim.lsp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities       = require("blink.cmp").get_lsp_capabilities(capabilities)
 
-local function default_on_attach(client, bufnr)
-	if client.server_capabilities.inlayHintProvider then
-		vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+-- Inlay hints helpers that work on Neovim 0.10+ and 0.11+
+local function ih_is_enabled(buf)
+	local ih = vim.lsp.inlay_hint
+	if not ih or not ih.is_enabled then return false end
+	-- Try new API first: is_enabled(bufnr)
+	local ok, res = pcall(ih.is_enabled, buf)
+	if ok then return res end
+	-- Fallback old API: is_enabled({ bufnr = ... })
+	ok, res = pcall(ih.is_enabled, { bufnr = buf })
+	return ok and res or false
+end
+
+local function ih_enable(buf, state)
+	local ih = vim.lsp.inlay_hint
+	if not ih or not ih.enable then return end
+	-- Try new API first: enable(bufnr, state)
+	if not pcall(ih.enable, buf, state) then
+		-- Fallback old API: enable(state, { bufnr = ... })
+		pcall(ih.enable, state, { bufnr = buf })
 	end
 end
+
+local function ih_toggle(buf)
+	buf = buf or vim.api.nvim_get_current_buf()
+	ih_enable(buf, not ih_is_enabled(buf))
+end
+
+-- Global desired default (true = on, false = off). Default to true if unset.
+vim.g.inlay_hints_enabled = true
+
+local function ih_apply_to_buf_if_supported(bufnr)
+	local clients = vim.lsp.get_clients({ bufnr = bufnr })
+	for _, c in ipairs(clients) do
+		if c.server_capabilities.inlayHintProvider then
+			ih_enable(bufnr, vim.g.inlay_hints_enabled and true or false)
+			return
+		end
+	end
+end
+
+local function ih_apply_to_all_buffers()
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.api.nvim_buf_is_loaded(bufnr) then
+			ih_apply_to_buf_if_supported(bufnr)
+		end
+	end
+end
+
+local function ih_toggle_global()
+	vim.g.inlay_hints_enabled = not (vim.g.inlay_hints_enabled and true or false)
+	ih_apply_to_all_buffers()
+end
+
+
+local function default_on_attach(client, bufnr)
+	if client.server_capabilities.inlayHintProvider then
+		ih_apply_to_buf_if_supported(bufnr) -- applies vim.g.inlay_hints_enabled
+	end
+end
+
+
+-- Per-buffer toggle (keep if you like having both)
+vim.keymap.set("n", "<leader>ih", function() ih_toggle() end,
+	{ desc = "Toggle inlay hints (buffer)" })
+
+-- Global toggle (updates default + syncs all current LSP buffers)
+vim.keymap.set("n", "<leader>iH", function() ih_toggle_global() end,
+	{ desc = "Toggle inlay hints (global + all buffers)" })
+
+vim.api.nvim_create_user_command("InlayHintsToggleGlobal", function()
+	ih_toggle_global()
+end, {})
+
+
+
+-- Keybind: <leader>ih toggles inlay hints in the current buffer
+vim.keymap.set("n", "<leader>ih", function() ih_toggle() end,
+	{ desc = "Toggle inlay hints (current buffer)" })
+
+-- Also expose a command: :InlayHintsToggle
+vim.api.nvim_create_user_command("InlayHintsToggle", function()
+	ih_toggle()
+end, {})
+
+
+
+
 
 -- lua
 lsp.config("lua_ls", {
