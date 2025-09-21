@@ -57,8 +57,9 @@ end, { desc = "Run, then open log and fully remove terminal" })
 
 vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 
-vim.keymap.set("n", "<leader>rt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
-vim.keymap.set("n", "<leader>rft", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
+vim.keymap.set("n", "<leader>rtt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
+vim.keymap.set("n", "<leader>rtd", ":! .\\scripts\\test_debug.bat<CR>", { desc = "runs test.bat" })
+vim.keymap.set("n", "<leader>rtf", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
 	{ desc = "Toggle GLSL Viewer" })
 
