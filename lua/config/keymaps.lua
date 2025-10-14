@@ -1,4 +1,51 @@
 -- lua/config/keymaps.lua
+
+-- Detect gtest macro on a line and return a ctest -R friendly filter
+-- Supports TEST, TEST_F, TEST_P, TYPED_TEST
+local function gtest_filter_from_line(line)
+	-- Trim
+	line = line or ""
+	-- Patterns to try in order
+	local patterns = {
+		"^%s*TEST%s*%(%s*([%w_]+)%s*,%s*([%w_]+)%s*%)",
+		"^%s*TEST_F%s*%(%s*([%w_]+)%s*,%s*([%w_]+)%s*%)",
+		"^%s*TEST_P%s*%(%s*([%w_]+)%s*,%s*([%w_]+)%s*%)",
+		"^%s*TYPED_TEST%s*%(%s*([%w_]+)%s*,%s*([%w_]+)%s*%)",
+	}
+	local suite, name
+	for _, pat in ipairs(patterns) do
+		suite, name = string.match(line, pat)
+		if suite and name then break end
+	end
+	if not (suite and name) then return nil end
+
+	-- Build "Suite.Test" but escape for ctest -R (regex)
+	local raw = suite .. "." .. name
+	local function escape_regex(s)
+		-- Escape characters meaningful in CTest's regex: . ^ $ * + ? ( ) [ ] { } | \
+		return (s:gsub("([%.%^%$%*%+%?%(%)%[%]%{%}%|%\\])", "\\%1"))
+	end
+	return escape_regex(raw)
+end
+
+-- If in visual mode, get the first selected line; otherwise use current line
+local function current_or_visual_line()
+	local mode = vim.fn.mode()
+	if mode == 'v' or mode == 'V' or mode == '\22' then -- visual, line, block
+		local _, ls, cs = unpack(vim.fn.getpos("'<"))
+		local _, le, ce = unpack(vim.fn.getpos("'>"))
+		-- Normalize order
+		if ls > le or (ls == le and cs > ce) then
+			ls, le = le, ls
+			cs, ce = ce, cs
+		end
+		local lines = vim.api.nvim_buf_get_lines(0, ls - 1, le, false)
+		return lines[1] or vim.api.nvim_get_current_line()
+	else
+		return vim.api.nvim_get_current_line()
+	end
+end
+
 vim.keymap.set('n', '<leader>e', "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
 
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
@@ -53,11 +100,46 @@ vim.keymap.set("n", "<leader>rr", function()
 	})
 
 	vim.cmd("startinsert")
-end, { desc = "Run, then open log and fully remove terminal" })
+end, { desc = "Run application, then open log and fully remove terminal" })
 
 vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 
-vim.keymap.set("n", "<leader>rtt", ":! .\\scripts\\test.bat<CR>", { desc = "runs test.bat" })
+vim.keymap.set("n", "<leader>rtt", function()
+	local logfile_test = "output_test.log"
+
+	-- Determine filter (if cursor/selection is on a TEST(...) line)
+	local line = current_or_visual_line()
+	local filter = gtest_filter_from_line(line)
+
+	-- Prepare command arguments for termopen
+	local cmd = { "cmd.exe", "/c", ".\\scripts\\test.bat" }
+	if filter and #filter > 0 then
+		table.insert(cmd, filter)
+	end
+
+	-- New tab with terminal
+	vim.cmd("tabnew")
+	local term_buf = vim.api.nvim_get_current_buf()
+	local term_win = vim.api.nvim_get_current_win()
+
+	vim.fn.termopen(cmd, {
+		cwd = vim.fn.getcwd(),
+		on_exit = function()
+			vim.schedule(function()
+				if vim.api.nvim_buf_is_valid(term_buf) then
+					vim.api.nvim_buf_delete(term_buf, { force = true })
+				end
+				if vim.api.nvim_win_is_valid(term_win) then
+					vim.api.nvim_win_close(term_win, true)
+				end
+				vim.cmd("edit " .. logfile_test)
+			end)
+		end,
+	})
+
+	vim.cmd("startinsert")
+end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
+
 vim.keymap.set("n", "<leader>rtd", ":! .\\scripts\\test_debug.bat<CR>", { desc = "runs test.bat" })
 vim.keymap.set("n", "<leader>rtf", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
