@@ -27,7 +27,7 @@ return {
 		filters = {
 			dotfiles = true,
 			custom = { "build" },
-			exclude = { "build.bat", "rebuild.bat" }
+			exclude = { "build.bat", "rebuild.bat", "build_output.log" }
 		},
 		view = {
 			width = 40,

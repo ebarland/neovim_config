@@ -64,14 +64,60 @@ vim.keymap.set("n", "<leader>cd", function() open_tree_at("C:\\Development\\Git\
 
 vim.keymap.set("n", "<leader>bc", ":wa<CR>:! .\\scripts\\check.bat<CR>", { desc = "runs check.bat" })
 
-vim.keymap.set("n", "<leader>bd", ":wa<CR>:! .\\scripts\\build.bat Debug<CR>",
-	{ desc = "runs build.bat with Debug config" })
-vim.keymap.set("n", "<leader>br", ":wa<CR>:! .\\scripts\\build.bat Release<CR>",
-	{ desc = "runs build.bat with Release config" })
-vim.keymap.set("n", "<leader>bed", ":wa<CR>:! .\\scripts\\rebuild.bat Debug<CR>",
-	{ desc = "runs rebuild.bat with Debug config" })
-vim.keymap.set("n", "<leader>ber", ":wa<CR>:! .\\scripts\\rebuild.bat Release<CR>",
-	{ desc = "runs rebuild.bat with Release config" })
+
+
+
+
+-- Helper: run a .bat via PowerShell and tee output to a logfile
+local function run_with_tee(script, arg, logfile, append)
+	local teeFlag = append and "-Append" or ""
+	-- Overwrite the log unless append=true
+	local pre = append and "" or ('Set-Content -Path "%s" -Value "" ; '):format(logfile)
+	local ps = ([[%s & "%s" %s 2>&1 | Tee-Object -FilePath "%s" %s]]):format(pre, script, arg or "", logfile, teeFlag)
+
+	vim.cmd("tabnew")
+	local term_buf = vim.api.nvim_get_current_buf()
+	local term_win = vim.api.nvim_get_current_win()
+
+	vim.fn.termopen({ "powershell", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass",
+		"-Command", ps }, {
+		cwd = vim.fn.getcwd(),
+		on_exit = function()
+			vim.schedule(function()
+				if vim.api.nvim_buf_is_valid(term_buf) then
+					vim.api.nvim_buf_delete(term_buf, { force = true })
+				end
+				if vim.api.nvim_win_is_valid(term_win) then
+					vim.api.nvim_win_close(term_win, true)
+				end
+				vim.cmd("edit " .. logfile)
+				vim.cmd("normal! G")
+			end)
+		end,
+	})
+	vim.cmd("startinsert")
+end
+
+-- Unified log file for all builds/rebuilds
+local LOG = "build_output.log"
+
+-- Build (overwrite log each time)
+vim.keymap.set("n", "<leader>bd", function()
+	run_with_tee(".\\scripts\\build.bat", "Debug", LOG, false)
+end, { desc = "Build Debug (tee to build_output.log)" })
+
+vim.keymap.set("n", "<leader>br", function()
+	run_with_tee(".\\scripts\\build.bat", "Release", LOG, false)
+end, { desc = "Build Release (tee to build_output.log)" })
+
+-- Rebuild (same log). If you prefer to keep history, set last arg to true.
+vim.keymap.set("n", "<leader>bed", function()
+	run_with_tee(".\\scripts\\rebuild.bat", "Debug", LOG, false)
+end, { desc = "Rebuild Debug (tee to build_output.log)" })
+
+vim.keymap.set("n", "<leader>ber", function()
+	run_with_tee(".\\scripts\\rebuild.bat", "Release", LOG, false)
+end, { desc = "Rebuild Release (tee to build_output.log)" })
 
 vim.keymap.set("n", "<leader>rr", function()
 	local logfile = "output.log"
@@ -155,6 +201,9 @@ vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find f
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
 vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+
+vim.keymap.set('n', '<C-s>', "<cmd>wa<CR>", { desc = "Save all files" })
+vim.keymap.set('i', '<C-s>', "<cmd>wa<CR>", { desc = "Save all files" })
 
 -- Remap Ctrl + hjkl for window navigation
 vim.keymap.set('n', '<C-h>', '<C-w>h')
