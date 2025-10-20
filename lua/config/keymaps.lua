@@ -186,8 +186,43 @@ vim.keymap.set("n", "<leader>rtt", function()
 	vim.cmd("startinsert")
 end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
 
+vim.keymap.set("n", "<leader>rtf", function()
+	local logfile_test = "output_test.log"
+
+	-- Determine filter (if cursor/selection is on a TEST(...) line)
+	local line = current_or_visual_line()
+	local filter = gtest_filter_from_line(line)
+
+	-- Prepare command arguments for termopen
+	local cmd = { "cmd.exe", "/c", ".\\scripts\\test_failed.bat" }
+	if filter and #filter > 0 then
+		table.insert(cmd, filter)
+	end
+
+	-- New tab with terminal
+	vim.cmd("tabnew")
+	local term_buf = vim.api.nvim_get_current_buf()
+	local term_win = vim.api.nvim_get_current_win()
+
+	vim.fn.termopen(cmd, {
+		cwd = vim.fn.getcwd(),
+		on_exit = function()
+			vim.schedule(function()
+				if vim.api.nvim_buf_is_valid(term_buf) then
+					vim.api.nvim_buf_delete(term_buf, { force = true })
+				end
+				if vim.api.nvim_win_is_valid(term_win) then
+					vim.api.nvim_win_close(term_win, true)
+				end
+				vim.cmd("edit " .. logfile_test)
+			end)
+		end,
+	})
+
+	vim.cmd("startinsert")
+end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
+
 vim.keymap.set("n", "<leader>rtd", ":! .\\scripts\\test_debug.bat<CR>", { desc = "runs test.bat" })
-vim.keymap.set("n", "<leader>rtf", ":! .\\scripts\\test_failed.bat<CR>", { desc = "runs test_failed.bat" })
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
 	{ desc = "Toggle GLSL Viewer" })
 
