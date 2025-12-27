@@ -125,7 +125,7 @@ lsp.config("clangd", {
 		"--all-scopes-completion",
 		"--pretty",
 		"--header-insertion-decorators",
-		"--function-arg-placeholders",
+		"--function-arg-placeholders=true",
 		"--completion-style=detailed",
 	},
 })
