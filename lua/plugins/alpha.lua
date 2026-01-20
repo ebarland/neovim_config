@@ -114,7 +114,7 @@ return {
 		end
 
 		-- Buttons
-		dashboard.section.buttons.val = {
+		local buttons = {
 			dashboard.button("ff", "  Find File", ":Telescope find_files<CR>"),
 			dashboard.button("fo", "  Recent Files", ":Telescope oldfiles<CR>"),
 			dashboard.button("fw", "󰈭  Find Word", ":Telescope live_grep<CR>"),
@@ -124,10 +124,24 @@ return {
 				":cd " ..
 				vim.fn.stdpath("config") .. " | NvimTreeClose | NvimTreeOpen " .. vim.fn.stdpath("config") .. "<CR>"
 			),
-			dashboard.button("cd", "  Dev folder",
-				":cd C:\\\\Development\\\\Git\\\\Private | NvimTreeClose | NvimTreeOpen C:\\\\Development\\\\Git\\\\Private<CR>"
-			),
 		}
+
+		-- Optional dev button (portable): uses $NVIM_DEV_DIR, otherwise Windows default, otherwise ~/dev.
+		do
+			local platform = require("config.platform")
+			local dev = vim.env.NVIM_DEV_DIR
+			if not dev or #dev == 0 then
+				dev = platform.is_win and "C:\\Development\\Git\\Private" or (platform.home .. "/dev")
+			end
+			if vim.fn.isdirectory(dev) == 1 then
+				local esc = dev:gsub("\\", "\\\\") -- for :cd command string on Windows
+				table.insert(buttons, dashboard.button("cd", "  Dev folder",
+					":cd " .. esc .. " | NvimTreeClose | NvimTreeOpen " .. esc .. "<CR>"
+				))
+			end
+		end
+
+		dashboard.section.buttons.val = buttons
 
 		-- Footer (stats)
 		local function footer()

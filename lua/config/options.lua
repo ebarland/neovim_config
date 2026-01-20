@@ -1,12 +1,31 @@
 -- lua/config/options.lua
-vim.g.mapleader          = ' '
+local platform = require("config.platform")
+
 vim.g.mapleader          = " "           -- leader = space
 vim.g.maplocalleader     = "\\"
 vim.g.loaded_netrw       = 1             -- spoof netrw already being loaded to avoid loading it
 vim.g.loaded_netrwPlugin = 1             -- spoof netrw already being loaded to avoid loading it
 
 vim.o.termguicolors      = true          -- optionally enable 24-bit colour
-vim.o.clipboard          = "unnamedplus" -- allow "p" to paste from system clipboard
+
+-- Clipboard:
+-- - Windows: always enable system clipboard.
+-- - Linux/macOS: only enable if a clipboard provider is available (common for SSH servers to have none).
+do
+	if platform.is_win then
+		vim.o.clipboard = "unnamedplus"
+	else
+		local has_provider =
+			(vim.fn.executable("wl-copy") == 1) or
+			(vim.fn.executable("xclip") == 1) or
+			(vim.fn.executable("xsel") == 1) or
+			(vim.fn.executable("pbcopy") == 1)
+		if has_provider then
+			vim.o.clipboard = "unnamedplus"
+		end
+	end
+end
+
 vim.o.autoindent         = true          -- always set autoindenting on
 vim.o.smartindent        = true          -- always set autoindenting on
 vim.o.swapfile           = false         -- do not create swap files
