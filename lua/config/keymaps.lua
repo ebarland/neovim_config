@@ -112,6 +112,12 @@ vim.keymap.set("n", "<leader>br", function()
 	run_with_tee(".\\scripts\\build.bat", "Release", LOG, false)
 end, { desc = "Build Release (tee to build_output.log)" })
 
+-- Build (overwrite log each time)
+vim.keymap.set("n", "<leader>bt", function()
+	vim.cmd("wa") -- Save all buffers
+	run_with_tee(".\\scripts\\build_with_tests.bat", "Debug", LOG, false)
+end, { desc = "Build Debug with tests (tee to build_output.log)" })
+
 -- Rebuild (same log). If you prefer to keep history, set last arg to true.
 vim.keymap.set("n", "<leader>bed", function()
 	vim.cmd("wa") -- Save all buffers
