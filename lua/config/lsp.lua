@@ -1,5 +1,6 @@
 -- lua/config/lsp.lua
 local lsp          = vim.lsp
+local platform     = require("config.platform")
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities       = require("blink.cmp").get_lsp_capabilities(capabilities)
@@ -65,10 +66,6 @@ local function default_on_attach(client, bufnr)
 end
 
 
--- Per-buffer toggle (keep if you like having both)
-vim.keymap.set("n", "<leader>ih", function() ih_toggle() end,
-	{ desc = "Toggle inlay hints (buffer)" })
-
 -- Global toggle (updates default + syncs all current LSP buffers)
 vim.keymap.set("n", "<leader>iH", function() ih_toggle_global() end,
 	{ desc = "Toggle inlay hints (global + all buffers)" })
@@ -106,28 +103,34 @@ lsp.config("clangd", {
 	on_attach = default_on_attach,
 	root_markers = { "compile_commands.json", "compile_flags.txt" },
 	filetypes = { "c", "cpp", "h", "hpp" },
-	init_option = { fallbackFlags = { "-std=c++2a" } },
+	init_options = { fallbackFlags = { "-std=c++2a" } },
 	single_file_support = true,
 	flags = {
 		debounce_text_changes = 100,
 	},
-	cmd = {
-		"clangd",
-		"--background-index",
-		"--header-insertion=never",
-		"--query-driver=C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/bin/**/cl.exe," ..
-		"C:/msys64/mingw64/bin/g++.exe," ..
-		"C:/msys64/ucrt64/bin/g++.exe," ..
-		"C:/Program Files/LLVM/bin/clang++.exe",
-		"--pch-storage=memory",
-		"--clang-tidy",
-		"--log=error",
-		"--all-scopes-completion",
-		"--pretty",
-		"--header-insertion-decorators",
-		"--function-arg-placeholders",
-		"--completion-style=detailed",
-	},
+	cmd = (function()
+		local cmd = {
+			"clangd",
+			"--background-index",
+			"--header-insertion=never",
+			"--pch-storage=memory",
+			"--clang-tidy",
+			"--log=error",
+			"--all-scopes-completion",
+			"--pretty",
+			"--header-insertion-decorators",
+			"--function-arg-placeholders=true",
+			"--completion-style=detailed",
+		}
+		-- Windows-only: help clangd find MSVC / mingw drivers.
+		if platform.is_win then
+			table.insert(cmd, "--query-driver=C:/Program Files/Microsoft Visual Studio/*/VC/Tools/MSVC/*/bin/**/cl.exe," ..
+				"C:/msys64/mingw64/bin/g++.exe," ..
+				"C:/msys64/ucrt64/bin/g++.exe," ..
+				"C:/Program Files/LLVM/bin/clang++.exe")
+		end
+		return cmd
+	end)(),
 })
 lsp.config("pyright", { capabilities = capabilities, on_attach = default_on_attach, })
 lsp.config("rust_analyzer", { capabilities = capabilities, on_attach = default_on_attach, })
@@ -204,14 +207,14 @@ lsp.handlers["textDocument/signatureHelp"] = lsp.with(
 	}
 )
 
-lsp.enable({
-	"lua_ls",
-	"cmake",
-	"clangd",
-	"pyright",
-	"rust_analyzer",
-	"vtsls",
-	"vue_ls",
-	"eslint",
-	"tailwindcss",
-})
+-- On Linux servers (often minimal), avoid enabling Node-based web LSPs by default.
+-- You can still install/enable them later by editing this list.
+local enable = { "lua_ls", "pyright" }
+if platform.is_win then
+	vim.list_extend(enable, { "cmake", "clangd", "rust_analyzer", "vtsls", "vue_ls", "eslint", "tailwindcss" })
+else
+	-- If you ever need them on Linux, add them here.
+	vim.list_extend(enable, { "cmake", "clangd", "rust_analyzer" })
+end
+
+lsp.enable(enable)

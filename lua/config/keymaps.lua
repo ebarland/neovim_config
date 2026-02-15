@@ -1,5 +1,7 @@
 -- lua/config/keymaps.lua
 
+local platform = require("config.platform")
+
 -- Detect gtest macro on a line and return a ctest -R friendly filter
 -- Supports TEST, TEST_F, TEST_P, TYPED_TEST
 local function gtest_filter_from_line(line)
@@ -59,10 +61,22 @@ end
 
 vim.keymap.set("n", "<leader>cc", function() open_tree_at(vim.fn.stdpath("config")) end,
 	{ silent = true, desc = "Open NvimTree at Neovim config" })
-vim.keymap.set("n", "<leader>cd", function() open_tree_at("C:\\Development\\Git\\Private") end,
-	{ silent = true, desc = "Open NvimTree at Dev folder" })
+do
+	-- Dev folder: Windows default, Linux/macOS default to ~/dev (or override via $NVIM_DEV_DIR).
+	local dev = vim.env.NVIM_DEV_DIR
+	if not dev or #dev == 0 then
+		dev = platform.is_win and "C:\\Development\\Git\\Private" or (platform.home .. "/dev")
+	end
+	if vim.fn.isdirectory(dev) == 1 then
+		vim.keymap.set("n", "<leader>cd", function() open_tree_at(dev) end,
+			{ silent = true, desc = "Open NvimTree at Dev folder" })
+	end
+end
 
-vim.keymap.set("n", "<leader>bc", ":wa<CR>:! .\\scripts\\check.bat<CR>", { desc = "runs check.bat" })
+-- Windows-only project script helpers (.bat + PowerShell/cmd.exe).
+-- Keep these from erroring/spamming on Linux servers.
+if platform.is_win then
+	vim.keymap.set("n", "<leader>bc", ":wa<CR>:! .\\scripts\\check.bat<CR>", { desc = "runs check.bat" })
 
 
 
@@ -102,15 +116,15 @@ end
 local LOG = "build_output.log"
 
 -- Build (overwrite log each time)
-vim.keymap.set("n", "<leader>bd", function()
-	vim.cmd("wa") -- Save all buffers
-	run_with_tee(".\\scripts\\build.bat", "Debug", LOG, false)
-end, { desc = "Build Debug (tee to build_output.log)" })
+	vim.keymap.set("n", "<leader>bd", function()
+		vim.cmd("wa") -- Save all buffers
+		run_with_tee(".\\scripts\\build.bat", "Debug", LOG, false)
+	end, { desc = "Build Debug (tee to build_output.log)" })
 
-vim.keymap.set("n", "<leader>br", function()
-	vim.cmd("wa") -- Save all buffers
-	run_with_tee(".\\scripts\\build.bat", "Release", LOG, false)
-end, { desc = "Build Release (tee to build_output.log)" })
+	vim.keymap.set("n", "<leader>br", function()
+		vim.cmd("wa") -- Save all buffers
+		run_with_tee(".\\scripts\\build.bat", "Release", LOG, false)
+	end, { desc = "Build Release (tee to build_output.log)" })
 
 -- Build (overwrite log each time)
 vim.keymap.set("n", "<leader>bt", function()
@@ -119,17 +133,17 @@ vim.keymap.set("n", "<leader>bt", function()
 end, { desc = "Build Debug with tests (tee to build_output.log)" })
 
 -- Rebuild (same log). If you prefer to keep history, set last arg to true.
-vim.keymap.set("n", "<leader>bed", function()
-	vim.cmd("wa") -- Save all buffers
-	run_with_tee(".\\scripts\\rebuild.bat", "Debug", LOG, false)
-end, { desc = "Rebuild Debug (tee to build_output.log)" })
+	vim.keymap.set("n", "<leader>bed", function()
+		vim.cmd("wa") -- Save all buffers
+		run_with_tee(".\\scripts\\rebuild.bat", "Debug", LOG, false)
+	end, { desc = "Rebuild Debug (tee to build_output.log)" })
 
-vim.keymap.set("n", "<leader>ber", function()
-	vim.cmd("wa") -- Save all buffers
-	run_with_tee(".\\scripts\\rebuild.bat", "Release", LOG, false)
-end, { desc = "Rebuild Release (tee to build_output.log)" })
+	vim.keymap.set("n", "<leader>ber", function()
+		vim.cmd("wa") -- Save all buffers
+		run_with_tee(".\\scripts\\rebuild.bat", "Release", LOG, false)
+	end, { desc = "Rebuild Release (tee to build_output.log)" })
 
-vim.keymap.set("n", "<leader>rr", function()
+	vim.keymap.set("n", "<leader>rr", function()
 	local logfile = "output.log"
 
 	-- create new tab with terminal
@@ -156,11 +170,11 @@ vim.keymap.set("n", "<leader>rr", function()
 	})
 
 	vim.cmd("startinsert")
-end, { desc = "Run application, then open log and fully remove terminal" })
+	end, { desc = "Run application, then open log and fully remove terminal" })
 
-vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
+	vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
 
-vim.keymap.set("n", "<leader>rtt", function()
+	vim.keymap.set("n", "<leader>rtt", function()
 	local logfile_test = "output_test.log"
 
 	-- Determine filter (if cursor/selection is on a TEST(...) line)
@@ -194,9 +208,9 @@ vim.keymap.set("n", "<leader>rtt", function()
 	})
 
 	vim.cmd("startinsert")
-end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
+	end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
 
-vim.keymap.set("n", "<leader>rtf", function()
+	vim.keymap.set("n", "<leader>rtf", function()
 	local logfile_test = "output_test.log"
 
 	-- Determine filter (if cursor/selection is on a TEST(...) line)
@@ -230,9 +244,10 @@ vim.keymap.set("n", "<leader>rtf", function()
 	})
 
 	vim.cmd("startinsert")
-end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
+	end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
 
-vim.keymap.set("n", "<leader>rtd", ":! .\\scripts\\test_debug.bat<CR>", { desc = "runs test.bat" })
+	vim.keymap.set("n", "<leader>rtd", ":! .\\scripts\\test_debug.bat<CR>", { desc = "runs test.bat" })
+end
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
 	{ desc = "Toggle GLSL Viewer" })
 

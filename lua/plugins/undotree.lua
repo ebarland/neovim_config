@@ -2,8 +2,11 @@
 return {
 	"mbbill/undotree",
 	config = function()
-		-- if Windows:
-		vim.g.undotree_DiffCommand = "FC"
+		local platform = require("config.platform")
+		-- Windows: use built-in `fc`. Linux/macOS: default `diff` is typically available.
+		if platform.is_win then
+			vim.g.undotree_DiffCommand = "FC"
+		end
 		vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = 'Toggle undotree' })
 	end
 }
