@@ -1,6 +1,10 @@
 -- after/plugin/param_highlight.lua
 
-vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = '#53F099' })
+if vim.g.background == 'dark' then
+	vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = '#53F099' })
+else
+	vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = '#6959f1' })
+end
 
 local ns = vim.api.nvim_create_namespace('ParamHighlight')
 local ts_parse = vim.treesitter.query.parse

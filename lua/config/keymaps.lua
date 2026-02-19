@@ -73,181 +73,122 @@ do
 	end
 end
 
--- Windows-only project script helpers (.bat + PowerShell/cmd.exe).
--- Keep these from erroring/spamming on Linux servers.
-if platform.is_win then
-	vim.keymap.set("n", "<leader>bc", ":wa<CR>:! .\\scripts\\check.bat<CR>", { desc = "runs check.bat" })
+-- Cross-platform project script helpers
+-- Windows: .bat files via cmd.exe    Linux: .sh files via bash
+-- Output shown live in a terminal tab; captured to a logfile on exit.
+local script_ext = platform.is_win and ".bat" or ".sh"
+local script_dir = platform.is_win and ".\\scripts\\" or "./scripts/"
 
+local function script_path(name)
+	return script_dir .. name .. script_ext
+end
 
+local function shell_cmd(name, extra_args)
+	local s = script_path(name)
+	local cmd
+	if platform.is_win then
+		cmd = { "cmd.exe", "/c", s }
+	else
+		cmd = { "bash", s }
+	end
+	if extra_args then
+		for _, a in ipairs(extra_args) do table.insert(cmd, a) end
+	end
+	return cmd
+end
 
-
-
--- Helper: run a .bat via PowerShell and tee output to a logfile
-local function run_with_tee(script, arg, logfile, append)
-	local teeFlag = append and "-Append" or ""
-	-- Overwrite the log unless append=true
-	local pre = append and "" or ('Set-Content -Path "%s" -Value "" ; '):format(logfile)
-	local ps = ([[%s & "%s" %s 2>&1 | Tee-Object -FilePath "%s" %s]]):format(pre, script, arg or "", logfile, teeFlag)
-
+local function run_in_term(cmd, logfile, opts)
+	opts = opts or {}
 	vim.cmd("tabnew")
 	local term_buf = vim.api.nvim_get_current_buf()
 	local term_win = vim.api.nvim_get_current_win()
 
-	vim.fn.termopen({ "powershell", "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass",
-		"-Command", ps }, {
+	vim.fn.termopen(cmd, {
 		cwd = vim.fn.getcwd(),
 		on_exit = function()
 			vim.schedule(function()
+				if logfile and vim.api.nvim_buf_is_valid(term_buf) then
+					local lines = vim.api.nvim_buf_get_lines(term_buf, 0, -1, false)
+					while #lines > 0 and lines[#lines] == "" do
+						table.remove(lines)
+					end
+					vim.fn.writefile(lines, logfile)
+				end
 				if vim.api.nvim_buf_is_valid(term_buf) then
 					vim.api.nvim_buf_delete(term_buf, { force = true })
 				end
 				if vim.api.nvim_win_is_valid(term_win) then
 					vim.api.nvim_win_close(term_win, true)
 				end
-				vim.cmd("edit " .. logfile)
-				vim.cmd("normal! G")
+				if logfile then
+					vim.cmd("edit " .. logfile)
+					if opts.jump_to_end then
+						vim.cmd("normal! G")
+					end
+				end
 			end)
 		end,
 	})
 	vim.cmd("startinsert")
 end
 
--- Unified log file for all builds/rebuilds
 local LOG = "build_output.log"
 
--- Build (overwrite log each time)
-	vim.keymap.set("n", "<leader>bd", function()
-		vim.cmd("wa") -- Save all buffers
-		run_with_tee(".\\scripts\\build.bat", "Debug", LOG, false)
-	end, { desc = "Build Debug (tee to build_output.log)" })
+vim.keymap.set("n", "<leader>bc", function()
+	vim.cmd("wa")
+	vim.cmd("! " .. script_path("check"))
+end, { desc = "Run check script" })
 
-	vim.keymap.set("n", "<leader>br", function()
-		vim.cmd("wa") -- Save all buffers
-		run_with_tee(".\\scripts\\build.bat", "Release", LOG, false)
-	end, { desc = "Build Release (tee to build_output.log)" })
+vim.keymap.set("n", "<leader>bd", function()
+	vim.cmd("wa")
+	run_in_term(shell_cmd("build", { "Debug" }), LOG, { jump_to_end = true })
+end, { desc = "Build Debug" })
 
--- Build (overwrite log each time)
+vim.keymap.set("n", "<leader>br", function()
+	vim.cmd("wa")
+	run_in_term(shell_cmd("build", { "Release" }), LOG, { jump_to_end = true })
+end, { desc = "Build Release" })
+
 vim.keymap.set("n", "<leader>bt", function()
-	vim.cmd("wa") -- Save all buffers
-	run_with_tee(".\\scripts\\build_with_tests.bat", "Debug", LOG, false)
-end, { desc = "Build Debug with tests (tee to build_output.log)" })
+	vim.cmd("wa")
+	run_in_term(shell_cmd("build_with_tests", { "Debug" }), LOG, { jump_to_end = true })
+end, { desc = "Build Debug with tests" })
 
--- Rebuild (same log). If you prefer to keep history, set last arg to true.
-	vim.keymap.set("n", "<leader>bed", function()
-		vim.cmd("wa") -- Save all buffers
-		run_with_tee(".\\scripts\\rebuild.bat", "Debug", LOG, false)
-	end, { desc = "Rebuild Debug (tee to build_output.log)" })
+vim.keymap.set("n", "<leader>bed", function()
+	vim.cmd("wa")
+	run_in_term(shell_cmd("rebuild", { "Debug" }), LOG, { jump_to_end = true })
+end, { desc = "Rebuild Debug" })
 
-	vim.keymap.set("n", "<leader>ber", function()
-		vim.cmd("wa") -- Save all buffers
-		run_with_tee(".\\scripts\\rebuild.bat", "Release", LOG, false)
-	end, { desc = "Rebuild Release (tee to build_output.log)" })
+vim.keymap.set("n", "<leader>ber", function()
+	vim.cmd("wa")
+	run_in_term(shell_cmd("rebuild", { "Release" }), LOG, { jump_to_end = true })
+end, { desc = "Rebuild Release" })
 
-	vim.keymap.set("n", "<leader>rr", function()
-	local logfile = "output.log"
+vim.keymap.set("n", "<leader>rr", function()
+	run_in_term(shell_cmd("run"), "output.log")
+end, { desc = "Run application" })
 
-	-- create new tab with terminal
-	vim.cmd("tabnew")
-	local term_buf = vim.api.nvim_get_current_buf()
-	local term_win = vim.api.nvim_get_current_win()
+vim.keymap.set("n", "<leader>rd", function()
+	vim.cmd("! " .. script_path("debug"))
+end, { desc = "Run debug script" })
 
-	vim.fn.termopen({ "cmd.exe", "/c", ".\\scripts\\run.bat" }, {
-		cwd = vim.fn.getcwd(),
-		on_exit = function()
-			vim.schedule(function()
-				-- completely wipe the terminal buffer
-				if vim.api.nvim_buf_is_valid(term_buf) then
-					vim.api.nvim_buf_delete(term_buf, { force = true })
-				end
-				-- close the now-empty window
-				if vim.api.nvim_win_is_valid(term_win) then
-					vim.api.nvim_win_close(term_win, true)
-				end
-				-- open the log file
-				vim.cmd("edit " .. logfile)
-			end)
-		end,
-	})
-
-	vim.cmd("startinsert")
-	end, { desc = "Run application, then open log and fully remove terminal" })
-
-	vim.keymap.set("n", "<leader>rd", ":! .\\scripts\\debug.bat<CR>", { desc = "runs debug.bat" })
-
-	vim.keymap.set("n", "<leader>rtt", function()
-	local logfile_test = "output_test.log"
-
-	-- Determine filter (if cursor/selection is on a TEST(...) line)
+vim.keymap.set("n", "<leader>rtt", function()
 	local line = current_or_visual_line()
 	local filter = gtest_filter_from_line(line)
+	local extra = (filter and #filter > 0) and { filter } or nil
+	run_in_term(shell_cmd("test", extra), "output_test.log")
+end, { desc = "Run tests (current TEST if under cursor)" })
 
-	-- Prepare command arguments for termopen
-	local cmd = { "cmd.exe", "/c", ".\\scripts\\test.bat" }
-	if filter and #filter > 0 then
-		table.insert(cmd, filter)
-	end
-
-	-- New tab with terminal
-	vim.cmd("tabnew")
-	local term_buf = vim.api.nvim_get_current_buf()
-	local term_win = vim.api.nvim_get_current_win()
-
-	vim.fn.termopen(cmd, {
-		cwd = vim.fn.getcwd(),
-		on_exit = function()
-			vim.schedule(function()
-				if vim.api.nvim_buf_is_valid(term_buf) then
-					vim.api.nvim_buf_delete(term_buf, { force = true })
-				end
-				if vim.api.nvim_win_is_valid(term_win) then
-					vim.api.nvim_win_close(term_win, true)
-				end
-				vim.cmd("edit " .. logfile_test)
-			end)
-		end,
-	})
-
-	vim.cmd("startinsert")
-	end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
-
-	vim.keymap.set("n", "<leader>rtf", function()
-	local logfile_test = "output_test.log"
-
-	-- Determine filter (if cursor/selection is on a TEST(...) line)
+vim.keymap.set("n", "<leader>rtf", function()
 	local line = current_or_visual_line()
 	local filter = gtest_filter_from_line(line)
+	local extra = (filter and #filter > 0) and { filter } or nil
+	run_in_term(shell_cmd("test_failed", extra), "output_test.log")
+end, { desc = "Run failed tests (current TEST if under cursor)" })
 
-	-- Prepare command arguments for termopen
-	local cmd = { "cmd.exe", "/c", ".\\scripts\\test_failed.bat" }
-	if filter and #filter > 0 then
-		table.insert(cmd, filter)
-	end
-
-	-- New tab with terminal
-	vim.cmd("tabnew")
-	local term_buf = vim.api.nvim_get_current_buf()
-	local term_win = vim.api.nvim_get_current_win()
-
-	vim.fn.termopen(cmd, {
-		cwd = vim.fn.getcwd(),
-		on_exit = function()
-			vim.schedule(function()
-				if vim.api.nvim_buf_is_valid(term_buf) then
-					vim.api.nvim_buf_delete(term_buf, { force = true })
-				end
-				if vim.api.nvim_win_is_valid(term_win) then
-					vim.api.nvim_win_close(term_win, true)
-				end
-				vim.cmd("edit " .. logfile_test)
-			end)
-		end,
-	})
-
-	vim.cmd("startinsert")
-	end, { desc = "Run tests (current TEST if under cursor), then open log and fully remove terminal" })
-
-	vim.keymap.set("n", "<leader>rtd", ":! .\\scripts\\test_debug.bat<CR>", { desc = "runs test.bat" })
-end
+vim.keymap.set("n", "<leader>rtd", function()
+	vim.cmd("! " .. script_path("test_debug"))
+end, { desc = "Run test debug script" })
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
 	{ desc = "Toggle GLSL Viewer" })
 
