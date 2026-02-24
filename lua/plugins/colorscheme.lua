@@ -23,11 +23,21 @@ return
 	priority = 1000,
 	-- you can set set configuration options here
 	config = function()
-		
-		vim.g.zenbones_lightness = 'dim'
-		-- vim.g.zenbones_darken_comments = 45
+		-- Function to get the current minutes past midnight
+		-- Compare the minutes
+		if vim.opt.background == # 'dark' then
+			vim.opt.cursorline = true
+			vim.g.zenbones_darkness = 'warm'
+			vim.g.zenbones_solid_line_nr = true
+			-- vim.g.zenbones_darken_comments = 45
+			vim.cmd.colorscheme('zenbones')
+		else
+			vim.opt.cursorline = true
+			vim.g.zenbones_lightness = 'dim'
+			vim.g.zenbones_solid_line_nr = true
+			-- vim.g.zenbones_darken_comments = 45
+		end
 		vim.cmd.colorscheme('zenbones')
-		vim.opt.background='light'
 	end
 }
 

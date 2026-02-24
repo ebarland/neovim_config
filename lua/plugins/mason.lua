@@ -7,7 +7,7 @@ return {
 			-- Keep Linux servers light: Python-first.
 			if platform.is_win then
 				return {
-					"vue_ls", "vtsls", "clangd", "lua_ls", "pyright", "rust_analyzer", "cmake",
+					"vue_ls", "vtsls", "clangd", "lua_ls", "pyright", "cmake",
 					"eslint", "tailwindcss",
 				}
 			end
@@ -22,7 +22,7 @@ return {
 				ensure_installed = (function()
 					local platform = require("config.platform")
 					if platform.is_win then
-						return { "prettierd", "eslint_d" }
+						return { "prettierd", "eslint_d", "codelldb" }
 					end
 					-- Python-focused tools (works well on Ubuntu).
 					return { "ruff", "black", "debugpy" }

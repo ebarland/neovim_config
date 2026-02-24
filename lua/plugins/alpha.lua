@@ -85,7 +85,22 @@ return {
 
 		-- Colors
 		vim.o.termguicolors = true
-		vim.api.nvim_set_hl(0, "MechRobe", { fg = "#d20f39" }) -- robe (default fill)
+
+		local function getMinutesNow()
+			local timeNow = os.date("*t")
+			return timeNow.hour * 60 + timeNow.min
+		end
+
+		-- Get current time in minutes
+		local currentMinutesPastMidnight = getMinutesNow()
+
+		-- Define a specific time (e.g., 7:30 AM) in minutes
+		local startTime = (17 * 60) -- 7:30 AM in minutes past midnight
+
+		if currentMinutesPastMidnight > startTime then
+			vim.api.nvim_set_hl(0, "MechRobe", { fg = "#d20f39" }) -- robe (default fill)
+		else
+		end
 		vim.api.nvim_set_hl(0, "MechMetal", { fg = "#a6adc8" }) -- steel (G)
 		vim.api.nvim_set_hl(0, "MechWire", { fg = "#585b70" }) -- wire (g)
 		vim.api.nvim_set_hl(0, "MechEye", { fg = "#40a02b" }) -- eyes (=)
@@ -118,7 +133,7 @@ return {
 			dashboard.button("ff", "  Find File", ":Telescope find_files<CR>"),
 			dashboard.button("fo", "  Recent Files", ":Telescope oldfiles<CR>"),
 			dashboard.button("fw", "󰈭  Find Word", ":Telescope live_grep<CR>"),
-			dashboard.button("th", "󱥚  Themes", ":lua require('nvchad.themes').open()<CR>"),
+			-- dashboard.button("th", "󱥚  Themes", ":lua require('nvchad.themes').open()<CR>"),
 			dashboard.button("ch", "  Mappings", ":NvCheatsheet<CR>"),
 			dashboard.button("cc", "  Config",
 				":cd " ..

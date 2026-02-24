@@ -133,7 +133,6 @@ lsp.config("clangd", {
 	end)(),
 })
 lsp.config("pyright", { capabilities = capabilities, on_attach = default_on_attach, })
-lsp.config("rust_analyzer", { capabilities = capabilities, on_attach = default_on_attach, })
 lsp.config("cmake",
 	{ capabilities = capabilities, on_attach = default_on_attach, filetypes = { "cmake" } })
 
@@ -211,10 +210,10 @@ lsp.handlers["textDocument/signatureHelp"] = lsp.with(
 -- You can still install/enable them later by editing this list.
 local enable = { "lua_ls", "pyright" }
 if platform.is_win then
-	vim.list_extend(enable, { "cmake", "clangd", "rust_analyzer", "vtsls", "vue_ls", "eslint", "tailwindcss" })
+	vim.list_extend(enable, { "cmake", "clangd", "vtsls", "vue_ls", "eslint", "tailwindcss" })
 else
 	-- If you ever need them on Linux, add them here.
-	vim.list_extend(enable, { "cmake", "clangd", "rust_analyzer" })
+	vim.list_extend(enable, { "cmake", "clangd" })
 end
 
 lsp.enable(enable)

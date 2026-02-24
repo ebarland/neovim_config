@@ -40,11 +40,14 @@ vim.o.tabstop            = 4     --  a tab is four spaces
 -- means: functions closed, everything else open.
 vim.o.foldenable         = true
 vim.o.foldmethod         = "expr"
-vim.o.foldexpr           = "nvim_treesitter#foldexpr()"
+vim.o.foldexpr           = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldtext           = ""
 vim.o.foldlevel          = 0
-vim.o.foldlevelstart     = 0
+vim.o.foldlevelstart     = 1
+vim.o.foldnestmax        = 3
 vim.o.foldcolumn         = "1"
 
+vim.opt.shadafile 	 	 = "NONE"
 
 vim.o.wrap = false   -- line wrapping
 vim.o.scrolloff = 16 -- sets the number of lines to buffer while scrolling up and down

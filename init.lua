@@ -1,5 +1,22 @@
 -- init.lua
 
+local function getMinutesNow()
+	local timeNow = os.date("*t")
+	return timeNow.hour * 60 + timeNow.min
+end
+
+-- Get current time in minutes
+local currentMinutesPastMidnight = getMinutesNow()
+
+-- Define a specific time (e.g., 7:30 AM) in minutes
+local startTime = (17 * 60)  -- 7:30 AM in minutes past midnight
+
+if currentMinutesPastMidnight > startTime then
+	vim.opt.background = 'dark'
+else
+	vim.opt.background = 'light'
+end
+
 -- Load your stuff
 require("config.lazy")
 require("config.keymaps")
@@ -173,106 +190,106 @@ end, { desc = "Open all folds" })
 
 -- Auto-warm <cwd>/src once per session (when clangd first attaches to a C/C++ buffer).
 -- Also exposes :ClangdWarm to run manually, and :ClangdWarmReset to clear the "done" state.
--- do
--- 	local config = {
--- 		batch    = 16, -- files per tick
--- 		delay_ms = 50, -- pause between batches
--- 		exts     = { "c", "cc", "cxx", "cpp", "h", "hh", "hpp", "hxx" },
--- 		exclude  = { "build", ".git", "third_party", "extern" },
--- 		subdir   = "src", -- warmed directory under cwd
--- 	}
---
--- 	local function pesc(s) return (s:gsub("([^%w])", "%%%1")) end
---
--- 	local function in_excluded_dir(p)
--- 		for _, name in ipairs(config.exclude) do
--- 			local pat = ("[\\/]%s[\\/]"):format(name == ".git" and "%%.git" or pesc(name))
--- 			if p:find(pat) then return true end
--- 		end
--- 		return false
--- 	end
---
--- 	local function collect_files(dir)
--- 		local files, seen = {}, {}
--- 		for _, ext in ipairs(config.exts) do
--- 			local pat = ("**/*.%s"):format(ext)
--- 			for _, p in ipairs(vim.fn.globpath(dir, pat, true, true)) do
--- 				if not in_excluded_dir(p) and not seen[p] then
--- 					seen[p] = true
--- 					table.insert(files, p)
--- 				end
--- 			end
--- 		end
--- 		return files
--- 	end
---
--- 	local function warm_dir(dir, on_done)
--- 		dir = vim.fs.normalize(dir)
--- 		if vim.fn.isdirectory(dir) ~= 1 then
--- 			vim.notify(("ClangdWarm: directory not found: %s"):format(dir), vim.log.levels.ERROR)
--- 			if on_done then on_done(false) end
--- 			return
--- 		end
--- 		local files = collect_files(dir)
--- 		if #files == 0 then
--- 			vim.notify(("ClangdWarm: no C/C++ files under %s"):format(dir), vim.log.levels.WARN)
--- 			if on_done then on_done(false) end
--- 			return
--- 		end
---
--- 		vim.notify(("ClangdWarm: warming %d files under %s"):format(#files, dir))
--- 		local i, batch = 1, config.batch
--- 		local function step()
--- 			local n = 0
--- 			while i <= #files and n < batch do
--- 				local b = vim.fn.bufadd(files[i])
--- 				vim.fn.bufload(b) -- triggers LSP didOpen -> clangd parses & caches
--- 				i, n = i + 1, n + 1
--- 			end
--- 			if i <= #files then
--- 				vim.defer_fn(step, config.delay_ms)
--- 			else
--- 				vim.notify("ClangdWarm: done.")
--- 				if on_done then on_done(true) end
--- 			end
--- 		end
--- 		step()
--- 	end
---
--- 	-- Manual commands
--- 	vim.api.nvim_create_user_command("ClangdWarm", function()
--- 		local cwd = vim.fs.normalize(vim.fn.getcwd())
--- 		warm_dir(vim.fs.joinpath(cwd, config.subdir))
--- 	end, {})
---
--- 	vim.api.nvim_create_user_command("ClangdWarmReset", function()
--- 		vim.g.clangd_warm_done_dirs = {}
--- 		vim.g.clangd_warm_running = false
--- 		vim.notify("ClangdWarm: session state reset.")
--- 	end, {})
---
--- 	-- Autocmd: run once per cwd when clangd first attaches to a C/C++ buffer
--- 	local grp = vim.api.nvim_create_augroup("ClangdWarmAuto", { clear = true })
--- 	vim.api.nvim_create_autocmd("LspAttach", {
--- 		group = grp,
--- 		callback = function(args)
--- 			local client = vim.lsp.get_client_by_id(args.data.client_id)
--- 			if not client or client.name ~= "clangd" then return end
--- 			local ft = vim.bo[args.buf].filetype
--- 			if ft ~= "c" and ft ~= "cpp" then return end
---
--- 			local cwd = vim.fs.normalize(vim.fn.getcwd())
--- 			vim.g.clangd_warm_done_dirs = vim.g.clangd_warm_done_dirs or {}
--- 			if vim.g.clangd_warm_running or vim.g.clangd_warm_done_dirs[cwd] then return end
---
--- 			vim.g.clangd_warm_running = true
--- 			-- small delay so clangd is fully ready
--- 			vim.defer_fn(function()
--- 				warm_dir(vim.fs.joinpath(cwd, config.subdir), function(ok)
--- 					vim.g.clangd_warm_done_dirs[cwd] = true
--- 					vim.g.clangd_warm_running = false
--- 				end)
--- 			end, 200)
--- 		end,
--- 	})
--- end
+do
+	local config = {
+		batch    = 16, -- files per tick
+		delay_ms = 50, -- pause between batches
+		exts     = { "c", "cc", "cxx", "cpp", "h", "hh", "hpp", "hxx" },
+		exclude  = { "build", ".git", "third_party", "extern" },
+		subdir   = "src", -- warmed directory under cwd
+	}
+
+	local function pesc(s) return (s:gsub("([^%w])", "%%%1")) end
+
+	local function in_excluded_dir(p)
+		for _, name in ipairs(config.exclude) do
+			local pat = ("[\\/]%s[\\/]"):format(name == ".git" and "%%.git" or pesc(name))
+			if p:find(pat) then return true end
+		end
+		return false
+	end
+
+	local function collect_files(dir)
+		local files, seen = {}, {}
+		for _, ext in ipairs(config.exts) do
+			local pat = ("**/*.%s"):format(ext)
+			for _, p in ipairs(vim.fn.globpath(dir, pat, true, true)) do
+				if not in_excluded_dir(p) and not seen[p] then
+					seen[p] = true
+					table.insert(files, p)
+				end
+			end
+		end
+		return files
+	end
+
+	local function warm_dir(dir, on_done)
+		dir = vim.fs.normalize(dir)
+		if vim.fn.isdirectory(dir) ~= 1 then
+			vim.notify(("ClangdWarm: directory not found: %s"):format(dir), vim.log.levels.ERROR)
+			if on_done then on_done(false) end
+			return
+		end
+		local files = collect_files(dir)
+		if #files == 0 then
+			vim.notify(("ClangdWarm: no C/C++ files under %s"):format(dir), vim.log.levels.WARN)
+			if on_done then on_done(false) end
+			return
+		end
+
+		vim.notify(("ClangdWarm: warming %d files under %s"):format(#files, dir))
+		local i, batch = 1, config.batch
+		local function step()
+			local n = 0
+			while i <= #files and n < batch do
+				local b = vim.fn.bufadd(files[i])
+				vim.fn.bufload(b) -- triggers LSP didOpen -> clangd parses & caches
+				i, n = i + 1, n + 1
+			end
+			if i <= #files then
+				vim.defer_fn(step, config.delay_ms)
+			else
+				vim.notify("ClangdWarm: done.")
+				if on_done then on_done(true) end
+			end
+		end
+		step()
+	end
+
+	-- Manual commands
+	vim.api.nvim_create_user_command("ClangdWarm", function()
+		local cwd = vim.fs.normalize(vim.fn.getcwd())
+		warm_dir(vim.fs.joinpath(cwd, config.subdir))
+	end, {})
+
+	vim.api.nvim_create_user_command("ClangdWarmReset", function()
+		vim.g.clangd_warm_done_dirs = {}
+		vim.g.clangd_warm_running = false
+		vim.notify("ClangdWarm: session state reset.")
+	end, {})
+
+	-- Autocmd: run once per cwd when clangd first attaches to a C/C++ buffer
+	local grp = vim.api.nvim_create_augroup("ClangdWarmAuto", { clear = true })
+	vim.api.nvim_create_autocmd("LspAttach", {
+		group = grp,
+		callback = function(args)
+			local client = vim.lsp.get_client_by_id(args.data.client_id)
+			if not client or client.name ~= "clangd" then return end
+			local ft = vim.bo[args.buf].filetype
+			if ft ~= "c" and ft ~= "cpp" then return end
+
+			local cwd = vim.fs.normalize(vim.fn.getcwd())
+			vim.g.clangd_warm_done_dirs = vim.g.clangd_warm_done_dirs or {}
+			if vim.g.clangd_warm_running or vim.g.clangd_warm_done_dirs[cwd] then return end
+
+			vim.g.clangd_warm_running = true
+			-- small delay so clangd is fully ready
+			vim.defer_fn(function()
+				warm_dir(vim.fs.joinpath(cwd, config.subdir), function(ok)
+					vim.g.clangd_warm_done_dirs[cwd] = true
+					vim.g.clangd_warm_running = false
+				end)
+			end, 200)
+		end,
+	})
+end

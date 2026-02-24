@@ -13,68 +13,119 @@
 
 local M = {}
 
--- Raw ASCII lines (no tags!)
-M.raw = {
-	"                                                                            								  ",
-	"                                                                            								  ",
-	"                                                                            								  ",
-	"                                                                            								  ",
-	"                                                                            								  ",
-	"                                                                           ....xxxxxx...					  ",
-	"                                                                         RRRRRRRRRRRRRRRRR				      ",
-	"                                                                       RRRRrrrrrrrrRRRRRRRRRR			      ",
-	"                                                                     RRRrrrrrrrrrrrrRRRRRRRRRRRR		      ",
-	"                                                                    RRRrrrrrrrrrrrrrrRRRRRRRRRRRRR		      ",
-	"                                                                  RRRRrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRR	      ",
-	"                                                                 RRRRrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRR	      ",
-	"                                                                RRRRrrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRR	      ",
-	"                                                                RRrrrrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRR	      ",
-	"                                                               RRRrrrrrrrrrrrrrrrrrrrrrRRRRrrrrRRRRRRR	      ",
-	"                                                              RRRrr      rrrrrrrrrrrrrrRRRRrrrrrRRrrrRR	  ",
-	"                                                             RR              rrrrrrrrrrrrRRrrrrrRRRrrrR	  ",
-	"                                                             RR                 rrrrrrrrrRRrrrrrRrrrRRR	  ",
-	"                                                            Rr                     rrrrrrRRRrrrRRrrrrRR	  ",
-	"                                                           Rrr    =======     ======   rrrRRrrrRrrrrrrrr     ",
-	"                                                          Rrr     =======     ======      rrrrrrrrrrrrrR     ",
-	"                                        uhhhh...            RR                             rrrrrrrRRRRRR     ",
-	"                                     Can I help you?        Rr                              rrrrrRRRRRRRR    ",
-	"                                                            Rr                                rrrrRRRRRRR    ",
-	"                                                           Rrr                           g     rrrRRRRRRRR   ",
-	"                                                           Rrr                      g    ggg      rrrrRRRRR  ",
-	"                                                           Rr       gg              gg  gGg  g    rrrrrrrrrr ",
-	"                                                           Rr      gg              gGgg GGG  g   rrrrrrrrrrr ",
-	"                                                          Rr      Gg    gg         gGGg  GG  G  rrrrrrrrrrrr ",
-	"                                                          R      GG   GGGg          GGGg G   G  rrrrrrRrrrrr ",
-	"                                                         R    R  GG  GGGg       g   GGGG     G  rrrrrrRrrrrr ",
-	"                                                    ggg.. R   R  GG  GGg         g   GGGG   G  rrrRrrrrrRrrr ",
-	"                                                  GGGgrrrRrr    GG  GGg          g    GGG  G  rrrRrrrrrRrrrr ",
-	"                                                 GGGGrrrrRRRrr  GG GGG           GG    GGG   rrrrrrrrrrrrrrr ",
-	"                                                rGGGGrrrrRRRrrr   GGg  g        GG      GGG  rrrrrrrrrrrrrrr ",
-	"                                                rGGGrrrrrRRRrrr  GGG   g        GG      GGGGG rrrrrrrrrrrrrr ",
-	"                                            ,gGrrGGGrrrrrRRRrrrGGGG    g  g     GG   g g  GGGG rrrrrrrrrrrrr ",
-	"                                        ,gGGGGrrrGGGrrrrrrRRRrrGGG  G   G  g    GG  g   g   GGGG  rrrrrrrrrr ",
-	"                                      ,gGGGGGrrrrGGGrrrrrrrR GGGG    G   G  g  GG  g     g     GGGG    rrrrr ",
-	"                                   ,gGGGGGGGrrrrrrGGGrrrrrrGGGG   g   G   G  g GG  g      g       GGGGGGGGGG ",
-	"                                 ,gGGGGGGGGrrrRrrrGGGGGGGGGGG     g     G  G  gGG  g        g          GGGGG ",
-	"                               ,gGGGGGGGGG rrrRRrrrr gGGGg        g      G  G gGG  G       -||-------   rrrr ",
-	"                             ,gGGGGGGGGG  rrrrRRRrrrrrggrr        g       G  G     G       | 100110 | rrrrrr ",
-	"                           ,gGGGGGGGGG   rrrrrrrRRRrrrrrr         g        G G     G       | 011011 | rrrrrr ",
-	"                          ,GGGGGGGGGG    rrrrrrRRRRrrrrrr         g g      G  G    G       ---------- rrrrrr ",
-	"-------------------------------------------------------------------------------------------------------------",
-}
+local function getMinutesNow()
+	local timeNow = os.date("*t")
+	return timeNow.hour * 60 + timeNow.min
+end
 
--- Character -> highlight group mapping
-local char_to_group = {
-	["="] = "MechEye",
-	["1"] = "MechEye",
-	["0"] = "MechEye",
-	["G"] = "MechMetal",
-	[","] = "MechWire",
-	["g"] = "MechWire",
-	["-"] = "MechWire",
-	["|"] = "MechWire",
-	-- r/R intentionally omitted: default robe fill handles them
-}
+-- Get current time in minutes
+local currentMinutesPastMidnight = getMinutesNow()
+
+-- Define a specific time (e.g., 7:30 AM) in minutes
+local startTime = (17 * 60)  -- 7:30 AM in minutes past midnight
+
+if currentMinutesPastMidnight > startTime then
+	-- Raw ASCII lines (no tags!)
+	M.raw = {
+		"                                                                            								  ",
+		"                                                                            								  ",
+		"                                                                            								  ",
+		"                                                                            								  ",
+		"                                                                            								  ",
+		"                                                                           ....xxxxxx...					  ",
+		"                                                                         RRRRRRRRRRRRRRRRR				      ",
+		"                                                                       RRRRrrrrrrrrRRRRRRRRRR			      ",
+		"                                                                     RRRrrrrrrrrrrrrRRRRRRRRRRRR		      ",
+		"                                                                    RRRrrrrrrrrrrrrrrRRRRRRRRRRRRR		      ",
+		"                                                                  RRRRrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRR	      ",
+		"                                                                 RRRRrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRR	      ",
+		"                                                                RRRRrrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRR	      ",
+		"                                                                RRrrrrrrrrrrrrrrrrrrrrrRRRRRRRRRRRRRRR	      ",
+		"                                                               RRRrrrrrrrrrrrrrrrrrrrrrRRRRrrrrRRRRRRR	      ",
+		"                                                              RRRrr      rrrrrrrrrrrrrrRRRRrrrrrRRrrrRR	  ",
+		"                                                             RR              rrrrrrrrrrrrRRrrrrrRRRrrrR	  ",
+		"                                                             RR                 rrrrrrrrrRRrrrrrRrrrRRR	  ",
+		"                                                            Rr                     rrrrrrRRRrrrRRrrrrRR	  ",
+		"                                                           Rrr    =======     ======   rrrRRrrrRrrrrrrrr     ",
+		"                                                          Rrr     =======     ======      rrrrrrrrrrrrrR     ",
+		"                                        uhhhh...            RR                             rrrrrrrRRRRRR     ",
+		"                                     Can I help you?        Rr                              rrrrrRRRRRRRR    ",
+		"                                                            Rr                                rrrrRRRRRRR    ",
+		"                                                           Rrr                           g     rrrRRRRRRRR   ",
+		"                                                           Rrr                      g    ggg      rrrrRRRRR  ",
+		"                                                           Rr       gg              gg  gGg  g    rrrrrrrrrr ",
+		"                                                           Rr      gg              gGgg GGG  g   rrrrrrrrrrr ",
+		"                                                          Rr      Gg    gg         gGGg  GG  G  rrrrrrrrrrrr ",
+		"                                                          R      GG   GGGg          GGGg G   G  rrrrrrRrrrrr ",
+		"                                                         R    R  GG  GGGg       g   GGGG     G  rrrrrrRrrrrr ",
+		"                                                    ggg.. R   R  GG  GGg         g   GGGG   G  rrrRrrrrrRrrr ",
+		"                                                  GGGgrrrRrr    GG  GGg          g    GGG  G  rrrRrrrrrRrrrr ",
+		"                                                 GGGGrrrrRRRrr  GG GGG           GG    GGG   rrrrrrrrrrrrrrr ",
+		"                                                rGGGGrrrrRRRrrr   GGg  g        GG      GGG  rrrrrrrrrrrrrrr ",
+		"                                                rGGGrrrrrRRRrrr  GGG   g        GG      GGGGG rrrrrrrrrrrrrr ",
+		"                                            ,gGrrGGGrrrrrRRRrrrGGGG    g  g     GG   g g  GGGG rrrrrrrrrrrrr ",
+		"                                        ,gGGGGrrrGGGrrrrrrRRRrrGGG  G   G  g    GG  g   g   GGGG  rrrrrrrrrr ",
+		"                                      ,gGGGGGrrrrGGGrrrrrrrR GGGG    G   G  g  GG  g     g     GGGG    rrrrr ",
+		"                                   ,gGGGGGGGrrrrrrGGGrrrrrrGGGG   g   G   G  g GG  g      g       GGGGGGGGGG ",
+		"                                 ,gGGGGGGGGrrrRrrrGGGGGGGGGGG     g     G  G  gGG  g        g          GGGGG ",
+		"                               ,gGGGGGGGGG rrrRRrrrr gGGGg        g      G  G gGG  G       -||-------   rrrr ",
+		"                             ,gGGGGGGGGG  rrrrRRRrrrrrggrr        g       G  G     G       | 100110 | rrrrrr ",
+		"                           ,gGGGGGGGGG   rrrrrrrRRRrrrrrr         g        G G     G       | 011011 | rrrrrr ",
+		"                          ,GGGGGGGGGG    rrrrrrRRRRrrrrrr         g g      G  G    G       ---------- rrrrrr ",
+		"-------------------------------------------------------------------------------------------------------------",
+	}
+	-- Character -> highlight group mapping
+	char_to_group = {
+		["="] = "MechEye",
+		["1"] = "MechEye",
+		["0"] = "MechEye",
+		["G"] = "MechMetal",
+		[","] = "MechWire",
+		["g"] = "MechWire",
+		["-"] = "MechWire",
+		["|"] = "MechWire",
+		-- r/R intentionally omitted: default robe fill handles them
+	}
+else
+	M.raw = {
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                    																																						",
+		"           									                                                  .,-:;//;:=,                                                                                                                                  ",
+		"           									                                              . :H@@@MM@M#H/.,+%;,                                                                                                                                  ",
+		"           									                                           ,/X+ +M@@M@MM%=,-%HMMM@X/,                                                                                                                                  ",
+		"           									                                         -+@MM; $M@@MH+-,;XMMMM@MMMM@+-                                                                                                                                  ",
+		"           									                                        ;@M@@M- XM@X;. -+XXXXXHHH@M@M#@/.                                                                                                                                  ",
+		"           									                                      ,%MM@@MH ,@%=             .---=-=:=,.                                                                                                                                  ",
+		"           									                                      =@#@@@MX.,                -%HX$$%%%:;                                                                                                                                  ",
+		"           									                                     =-./@M@M$                   .;@MMMM@___                    __                     __          __                     __             _                                                                                                                                            ",
+		"           									                                     X@/ -$MM/                    . +MM@/   |  ____  ___  _____/ /___  __________     / /   ____ _/ /_  ____  _________ _/ /_____  _____(_)__  _____                                                                                                                                  ",
+		"           									                                    ,@M@H: :@:                    . =X#/ /| | / __ \\/ _ \\/ ___/ __/ / / / ___/ _ \\   / /   / __ `/ __ \\/ __ \\/ ___/ __ `/ __/ __ \\/ ___/ / _ \\/ ___/                                                                                                                                  ",
+		"           									                                    ,@@@MMX, .                    /H- / ___ |/ /_/ /  __/ /  / /_/ /_/ / /  /  __/  / /___/ /_/ / /_/ / /_/ / /  / /_/ / /_/ /_/ / /  / /  __(__  )                                                                                                                                   ",
+		"           									                                    .H@@@@M@+,                    %MM/_/  |_/ .___/\\___/_/   \\__/\\__,_/_/   \\___/  /_____/\\__,_/_.___/\\____/_/   \\__,_/\\__/\\____/_/  /_/\\___/____/                                                                                                                                    ",
+		"           									                                     /MMMM@MMH/.                  XM@MH; =;/_/                                                                                                                                     ",
+		"           									                                      /%+%$XHH@$=              , .H@@@@MX,                                                                                                                                  ",
+		"           									                                       .=--------.           -%H.,@@@@@MX,                                                                                                                                  ",
+		"           									                                       .%MM@@@HHHXX$$$%+- .:$MMX =M@@MM%.                                                                                                                                  ",
+		"           									                                         =XMMM@MM@MM#H;,-+HMM@M+ /MMMX=                                                                                                                                  ",
+		"           									                                           =%@M@M#@$-.=$@MM@@@M; %M%=                                                                                                                                  ",
+		"           									                                             ,:+$+-,/H#MMMMMMM@= =,                                                                                                                                  ",
+		"           									                                                   =++%%%%+/:-.                                                                                                                                  ",
+	}
+	-- Character -> highlight group mapping
+	char_to_group = {
+	}
+end
+
 
 local phrase_to_group = {
 	["uhhhh..."] = "MechWhite",
