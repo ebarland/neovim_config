@@ -8,10 +8,10 @@ local MAX_SHADOW = 3
 
 local function set_param_hl()
 	local dark = vim.o.background == 'dark'
-	vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = dark and '#53F099' or '#6959f1' })
+	vim.api.nvim_set_hl(0, 'ParameterVariable', { fg = dark and '#fd8200' or '#fd8200' })
 	local shadow = dark
 		and { '#7EC8F2', '#C49BF5', '#F5CB7A' }
-		or  { '#1778C9', '#C4268A', '#B37D00' }
+		or { '#1778C9', '#C4268A', '#B37D00' }
 	for i, color in ipairs(shadow) do
 		vim.api.nvim_set_hl(0, 'ParameterShadow' .. i, { fg = color })
 	end

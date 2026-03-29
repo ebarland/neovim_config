@@ -83,206 +83,53 @@ local function script_path(name)
 	return script_dir .. name .. script_ext
 end
 
-local function shell_cmd(name, extra_args)
-	local s = script_path(name)
-	local cmd
-	if platform.is_win then
-		cmd = { "cmd.exe", "/c", s }
-	else
-		cmd = { "bash", s }
-	end
+local function cmd_string(name, extra_args)
+	local parts = { script_path(name) }
 	if extra_args then
-		for _, a in ipairs(extra_args) do table.insert(cmd, a) end
+		for _, a in ipairs(extra_args) do
+			table.insert(parts, a)
+		end
 	end
-	return cmd
+	return table.concat(parts, " ")
 end
 
-local cleaning_art = {
-	"  .----------------------------.",
-	"  | Cleaning up your mess...   |",
-	"  '----------------------------'",
-	"       /",
-	" (•_•)/",
-	" <|  |>    __|__",
-	"  || ||   |     |",
-	"  /| |\\   |_____|",
-}
-
-local building_art = {
-	"  .----------------------------.",
-	"  | Building...                |",
-	"  '----------------------------'",
-	"       /",
-	" (•_•)/",
-	" /|  |\\",
-	"  /  \\",
-	"",
-}
-
-local function show_rebuild_popup()
-	local width = 34
-	local height = #cleaning_art
-	local buf = vim.api.nvim_create_buf(false, true)
-	vim.bo[buf].bufhidden = "hide"
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, cleaning_art)
-
-	local win_opts = {
-		relative = "editor",
-		width = width,
-		height = height,
-		row = 1,
-		col = vim.o.columns - width - 4,
-		style = "minimal",
-		border = "rounded",
-	}
-	local win = vim.api.nvim_open_win(buf, false, win_opts)
-
-	return {
-		set_building = function()
-			if vim.api.nvim_buf_is_valid(buf) then
-				vim.api.nvim_buf_set_lines(buf, 0, -1, false, building_art)
-			end
-		end,
-		reopen = function()
-			if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
-			if vim.api.nvim_buf_is_valid(buf) then
-				win = vim.api.nvim_open_win(buf, false, win_opts)
-			end
-		end,
-		close = function()
-			if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
-			if vim.api.nvim_buf_is_valid(buf) then vim.api.nvim_buf_delete(buf, { force = true }) end
-		end,
-	}
-end
-
-local function run_in_term(cmd, logfile, opts)
-	opts = opts or {}
-	vim.cmd("tabnew")
-	if opts.on_start then opts.on_start() end
-	local term_buf = vim.api.nvim_get_current_buf()
-	local term_win = vim.api.nvim_get_current_win()
-
-	vim.fn.termopen(cmd, {
-		cwd = vim.fn.getcwd(),
-		on_exit = function()
-			vim.schedule(function()
-				if logfile and vim.api.nvim_buf_is_valid(term_buf) then
-					local lines = vim.api.nvim_buf_get_lines(term_buf, 0, -1, false)
-					while #lines > 0 and lines[#lines] == "" do
-						table.remove(lines)
-					end
-					if opts.log_prefix then
-						for i, line in ipairs(opts.log_prefix) do
-							table.insert(lines, i, line)
-						end
-					end
-					vim.fn.writefile(lines, logfile)
-				end
-				if vim.api.nvim_buf_is_valid(term_buf) then
-					vim.api.nvim_buf_delete(term_buf, { force = true })
-				end
-				if vim.api.nvim_win_is_valid(term_win) then
-					vim.api.nvim_win_close(term_win, true)
-				end
-				if logfile then
-					vim.cmd("edit " .. logfile)
-					if opts.jump_to_end then
-						vim.cmd("normal! G")
-					end
-				end
-				if opts.on_done then opts.on_done() end
-			end)
-		end,
+local function run_in_term(cmd_str, logfile)
+	local final_cmd = cmd_str
+	if logfile then
+		final_cmd = cmd_str .. " 2>&1 | tee " .. logfile
+	end
+	require("floaterm.api").send_cmd({
+		cmd = final_cmd,
+		name = "Build",
 	})
-	vim.cmd("startinsert")
 end
 
 local LOG = "build_output.log"
 
 vim.keymap.set("n", "<leader>bc", function()
 	vim.cmd("wa")
-	vim.cmd("! " .. script_path("check"))
+	run_in_term(cmd_string("check"))
 end, { desc = "Run check script" })
-
-local function build_popup()
-	local buf = vim.api.nvim_create_buf(false, true)
-	vim.bo[buf].bufhidden = "hide"
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, building_art)
-	local win_opts = {
-		relative = "editor",
-		width = 34,
-		height = #building_art,
-		row = 1,
-		col = vim.o.columns - 38,
-		style = "minimal",
-		border = "rounded",
-	}
-	local win = vim.api.nvim_open_win(buf, false, win_opts)
-	return {
-		reopen = function()
-			if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
-			if vim.api.nvim_buf_is_valid(buf) then
-				win = vim.api.nvim_open_win(buf, false, win_opts)
-			end
-		end,
-		close = function()
-			if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
-			if vim.api.nvim_buf_is_valid(buf) then vim.api.nvim_buf_delete(buf, { force = true }) end
-		end,
-	}
-end
 
 vim.keymap.set("n", "<leader>bd", function()
 	vim.cmd("wa")
-	local popup = build_popup()
-	run_in_term(shell_cmd("build", { "Debug" }), LOG, {
-		jump_to_end = true,
-		on_start = popup.reopen,
-		on_done = popup.close,
-	})
+	run_in_term(cmd_string("build", { "Debug" }), LOG)
 end, { desc = "Build Debug" })
 
 vim.keymap.set("n", "<leader>br", function()
 	vim.cmd("wa")
-	local popup = build_popup()
-	run_in_term(shell_cmd("build", { "Release" }), LOG, {
-		jump_to_end = true,
-		on_start = popup.reopen,
-		on_done = popup.close,
-	})
+	run_in_term(cmd_string("build", { "Release" }), LOG)
 end, { desc = "Build Release" })
 
 vim.keymap.set("n", "<leader>bt", function()
 	vim.cmd("wa")
-	run_in_term(shell_cmd("build_with_tests", { "Debug" }), LOG, { jump_to_end = true })
+	run_in_term(cmd_string("build_with_tests", { "Debug" }), LOG)
 end, { desc = "Build Debug with tests" })
 
 local function rebuild(build_type)
 	vim.cmd("wa")
-	local popup = show_rebuild_popup()
-	local clean_output = {}
-	vim.fn.jobstart(shell_cmd("clean"), {
-		cwd = vim.fn.getcwd(),
-		stdout_buffered = true,
-		stderr_buffered = true,
-		on_stdout = function(_, data) if data then vim.list_extend(clean_output, data) end end,
-		on_stderr = function(_, data) if data then vim.list_extend(clean_output, data) end end,
-		on_exit = function()
-			vim.schedule(function()
-				local clean_lines = vim.tbl_filter(function(l) return l ~= "" end, clean_output)
-				popup.set_building()
-				vim.defer_fn(function()
-					run_in_term(shell_cmd("build", { build_type }), LOG, {
-						jump_to_end = true,
-						log_prefix = clean_lines,
-						on_start = popup.reopen,
-						on_done = popup.close,
-					})
-				end, 1000)
-			end)
-		end,
-	})
+	local cmd_str = cmd_string("clean") .. " && " .. cmd_string("build", { build_type })
+	run_in_term(cmd_str, LOG)
 end
 
 vim.keymap.set("n", "<leader>bed", function() rebuild("Debug") end, { desc = "Rebuild Debug" })
@@ -290,12 +137,12 @@ vim.keymap.set("n", "<leader>ber", function() rebuild("Release") end, { desc = "
 
 vim.keymap.set("n", "<leader>rr", function()
 	vim.cmd("wa")
-	run_in_term(shell_cmd("run"), "output.log")
+	run_in_term(cmd_string("run"), "output.log")
 end, { desc = "Run application" })
 
 vim.keymap.set("n", "<leader>rd", function()
 	vim.cmd("wa")
-	vim.cmd("! " .. script_path("debug"))
+	run_in_term(cmd_string("debug"))
 end, { desc = "Run debug script" })
 
 vim.keymap.set("n", "<leader>rtt", function()
@@ -303,7 +150,7 @@ vim.keymap.set("n", "<leader>rtt", function()
 	local line = current_or_visual_line()
 	local filter = gtest_filter_from_line(line)
 	local extra = (filter and #filter > 0) and { filter } or nil
-	run_in_term(shell_cmd("test", extra), "output_test.log")
+	run_in_term(cmd_string("test", extra), "output_test.log")
 end, { desc = "Run tests (current TEST if under cursor)" })
 
 vim.keymap.set("n", "<leader>rtf", function()
@@ -311,12 +158,12 @@ vim.keymap.set("n", "<leader>rtf", function()
 	local line = current_or_visual_line()
 	local filter = gtest_filter_from_line(line)
 	local extra = (filter and #filter > 0) and { filter } or nil
-	run_in_term(shell_cmd("test_failed", extra), "output_test.log")
+	run_in_term(cmd_string("test_failed", extra), "output_test.log")
 end, { desc = "Run failed tests (current TEST if under cursor)" })
 
 vim.keymap.set("n", "<leader>rtd", function()
 	vim.cmd("wa")
-	vim.cmd("! " .. script_path("test_debug"))
+	run_in_term(cmd_string("test_debug"))
 end, { desc = "Run test debug script" })
 vim.keymap.set("n", "<leader>gl", "<cmd> :lua require('glslView').glslView({'-w', '128', '-h', '256'}) <CR>",
 	{ desc = "Toggle GLSL Viewer" })
@@ -327,6 +174,28 @@ vim.keymap.set("n", "<leader>dD", "<cmd>Bwipeout<CR>", { desc = "Buffer wipeout 
 
 -- Map <Esc> to execute :nohlsearch in normal mode
 vim.keymap.set("n", "<Esc>", ":nohlsearch<CR>", { desc = "Clear search highlighting" })
+
+-- Send raw Esc byte to terminal process (fixes Esc not reaching TUI apps like Claude Code)
+vim.keymap.set('t', '<Esc>', function()
+	vim.api.nvim_chan_send(vim.b.terminal_job_id, '\027')
+end, { noremap = true, desc = "Send raw Esc to terminal" })
+
+-- Gracefully close terminal: send Ctrl-c twice to exit the app, then exit the shell
+vim.keymap.set('t', '<C-x>', function()
+	local job_id = vim.b.terminal_job_id
+	if job_id then
+		vim.api.nvim_chan_send(job_id, '\003')
+		vim.defer_fn(function()
+			vim.api.nvim_chan_send(job_id, '\003')
+			vim.defer_fn(function()
+				vim.api.nvim_chan_send(job_id, 'exit\r')
+			end, 1000)
+		end, 100)
+	end
+end, { noremap = true, desc = "Close terminal" })
+
+-- Exit terminal mode to browse output (use A or i to re-enter terminal input)
+vim.keymap.set('t', '<C-q>', [[<C-\><C-n>]], { noremap = true, desc = "Exit terminal mode" })
 
 -- telescope
 local builtin = require('telescope.builtin')

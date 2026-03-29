@@ -22,7 +22,7 @@ end
 local currentMinutesPastMidnight = getMinutesNow()
 
 -- Define a specific time (e.g., 7:30 AM) in minutes
-local startTime = (17 * 60)  -- 7:30 AM in minutes past midnight
+local startTime = (17 * 60) -- 7:30 AM in minutes past midnight
 
 if currentMinutesPastMidnight > startTime then
 	-- Raw ASCII lines (no tags!)
@@ -123,6 +123,13 @@ else
 	}
 	-- Character -> highlight group mapping
 	char_to_group = {
+		["\\"] = "MechWire",
+		["_"] = "MechWire",
+		["/"] = "MechWire",
+		-- ["."] = "Orange",
+		-- [","] = "Orange",
+		-- [":"] = "Orange",
+		-- [";"] = "Orange",
 	}
 end
 
@@ -134,6 +141,7 @@ local phrase_to_group = {
 
 -- Single-letter tag mapping for optional tagged export
 local group_to_tag = {
+	-- Orange    = "O",
 	MechEye   = "E",
 	MechMetal = "S", -- Steel
 	MechWire  = "W",

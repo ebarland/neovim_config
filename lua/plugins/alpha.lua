@@ -83,8 +83,8 @@ return {
 		local art = require("user.art")
 
 
-		-- Colors
 		vim.o.termguicolors = true
+
 
 		local function getMinutesNow()
 			local timeNow = os.date("*t")
@@ -101,6 +101,7 @@ return {
 			vim.api.nvim_set_hl(0, "MechRobe", { fg = "#d20f39" }) -- robe (default fill)
 		else
 		end
+		vim.api.nvim_set_hl(0, "Orange", { fg = "#fdaa00" })
 		vim.api.nvim_set_hl(0, "MechMetal", { fg = "#a6adc8" }) -- steel (G)
 		vim.api.nvim_set_hl(0, "MechWire", { fg = "#585b70" }) -- wire (g)
 		vim.api.nvim_set_hl(0, "MechEye", { fg = "#40a02b" }) -- eyes (=)

@@ -19,8 +19,8 @@ return {
 							vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
 						end
 
-						map("n", "<leader>rr", function() vim.cmd.RustLsp("runnables") end, "Rust runnables")
-						map("n", "<leader>rd", function() vim.cmd.RustLsp("debuggables") end, "Rust debuggables")
+						map("n", "<leader>Rr", function() vim.cmd.RustLsp("runnables") end, "Rust runnables")
+						map("n", "<leader>Rd", function() vim.cmd.RustLsp("debuggables") end, "Rust debuggables")
 						map("n", "<leader>me", function() vim.cmd.RustLsp("expandMacro") end, "Expand macro")
 						map("n", "<leader>rc", function() vim.cmd.RustLsp("openCargo") end, "Open Cargo.toml")
 						map("n", "<leader>rp", function() vim.cmd.RustLsp("parentModule") end, "Parent module")
