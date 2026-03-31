@@ -95,13 +95,49 @@ end
 
 local function run_in_term(cmd_str, logfile)
 	local final_cmd = cmd_str
-	if logfile then
+	if logfile and not platform.is_win then
 		final_cmd = cmd_str .. " 2>&1 | tee " .. logfile
 	end
-	require("floaterm.api").send_cmd({
-		cmd = final_cmd,
-		name = "Build",
+
+	local buf = vim.api.nvim_create_buf(false, true)
+	local h = math.floor(vim.o.lines * 0.7)
+	local w = math.floor(vim.o.columns * 0.8)
+	local win = vim.api.nvim_open_win(buf, true, {
+		relative = "editor",
+		row = math.floor((vim.o.lines - h) / 2),
+		col = math.floor((vim.o.columns - w) / 2),
+		width = w,
+		height = h,
+		style = "minimal",
+		border = "rounded",
+		title = " Build ",
+		title_pos = "center",
 	})
+
+	vim.fn.termopen(final_cmd, {
+		on_exit = function(_, exit_code)
+			-- On Windows, dump terminal buffer contents to logfile
+			if logfile and platform.is_win then
+				local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+				vim.fn.writefile(lines, logfile)
+			end
+			vim.api.nvim_buf_set_var(buf, "build_exit_code", exit_code)
+			local ok, _ = pcall(vim.api.nvim_win_set_config, win, {
+				title = exit_code == 0 and " Build ✓ " or " Build ✗ (exit " .. exit_code .. ") ",
+				title_pos = "center",
+			})
+			if ok then
+				vim.cmd.stopinsert()
+			end
+		end,
+	})
+	vim.cmd.startinsert()
+
+	vim.keymap.set({"n", "t"}, "q", function()
+		if vim.api.nvim_win_is_valid(win) then
+			vim.api.nvim_win_close(win, true)
+		end
+	end, { buffer = buf, desc = "Close build window" })
 end
 
 local LOG = "build_output.log"
