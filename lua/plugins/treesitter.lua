@@ -8,7 +8,7 @@ return {
 			indent = { enable = true, disable = { "c", "cpp" } },
 			ensure_installed = {
 				"vue", "typescript", "javascript", "html", "css", "scss", "json", "tsx",
-				"c", "cpp", "lua", "python", "rust", "cmake",
+				"c", "cpp", "c_sharp", "lua", "python", "rust", "cmake",
 				"toml", "glsl",
 			},
 			highlight = { enable = true },

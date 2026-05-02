@@ -190,6 +190,23 @@ lsp.config("eslint", {
 	},
 })
 
+lsp.config("omnisharp", {
+	capabilities = capabilities,
+	on_attach = default_on_attach,
+	root_markers = { "*.sln", "*.csproj", "omnisharp.json", ".git" },
+	settings = {
+		FormattingOptions = {
+			EnableEditorConfigSupport = true,
+			OrganizeImports = true,
+		},
+		RoslynExtensionsOptions = {
+			EnableAnalyzersSupport = true,
+			EnableImportCompletion = true,
+			AnalyzeOpenDocumentsOnly = true,
+		},
+	},
+})
+
 lsp.config("tailwindcss", {
 	capabilities = capabilities,
 	on_attach = default_on_attach,
@@ -210,7 +227,7 @@ lsp.handlers["textDocument/signatureHelp"] = lsp.with(
 -- You can still install/enable them later by editing this list.
 local enable = { "lua_ls", "pyright" }
 if platform.is_win then
-	vim.list_extend(enable, { "cmake", "clangd", "vtsls", "vue_ls", "eslint", "tailwindcss" })
+	vim.list_extend(enable, { "cmake", "clangd", "omnisharp", "vtsls", "vue_ls", "eslint", "tailwindcss" })
 else
 	-- If you ever need them on Linux, add them here.
 	vim.list_extend(enable, { "cmake", "clangd" })

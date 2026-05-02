@@ -8,7 +8,7 @@ return {
 			if platform.is_win then
 				return {
 					"vue_ls", "vtsls", "clangd", "lua_ls", "pyright", "cmake",
-					"eslint", "tailwindcss",
+					"eslint", "tailwindcss", "omnisharp",
 				}
 			end
 			return { "lua_ls", "pyright" }
@@ -22,7 +22,7 @@ return {
 				ensure_installed = (function()
 					local platform = require("config.platform")
 					if platform.is_win then
-						return { "prettierd", "eslint_d", "codelldb" }
+						return { "prettierd", "eslint_d", "codelldb", "netcoredbg" }
 					end
 					-- Python-focused tools (works well on Ubuntu).
 					return { "ruff", "black", "debugpy" }
